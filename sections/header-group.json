@@ -1,0 +1,189 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "dropmagic-style": {
+      "type": "dropmagic-style",
+      "settings": {}
+    },
+    "header_announcements_9jGBFp": {
+      "type": "header-announcements",
+      "blocks": {
+        "announcement_BxgCk9": {
+          "type": "_announcement",
+          "settings": {
+            "text": "Welcome to our store",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.75rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "announcement_BxgCk9"
+      ],
+      "disabled": true,
+      "name": "t:names.announcement_bar",
+      "settings": {
+        "speed": 5,
+        "section_width": "page-width",
+        "color_scheme": "scheme-1",
+        "divider_width": 1,
+        "padding-block-start": 15,
+        "padding-block-end": 15
+      }
+    },
+    "header_section": {
+      "type": "header",
+      "blocks": {
+        "header-logo": {
+          "type": "_header-logo",
+          "static": true,
+          "settings": {
+            "hide_logo_on_home_page": false,
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "header-menu": {
+          "type": "_header-menu",
+          "static": true,
+          "settings": {
+            "menu": "main-menu",
+            "color_scheme": "",
+            "type_font_primary_size": "0.875rem",
+            "menu_font_style": "inverse",
+            "type_font_primary_link": "body",
+            "type_case_primary_link": "none",
+            "menu_style": "featured_products",
+            "featured_products_aspect_ratio": "4 / 5",
+            "featured_collections_aspect_ratio": "16 / 9",
+            "image_border_radius": 0,
+            "navigation_bar": false,
+            "color_scheme_navigation_bar": "",
+            "drawer_accordion": false,
+            "drawer_accordion_expand_first": false,
+            "drawer_dividers": false
+          },
+          "blocks": {}
+        }
+      },
+      "disabled": true,
+      "settings": {
+        "logo_position": "left",
+        "menu_position": "left",
+        "menu_row": "top",
+        "customer_account_menu": "customer-account-main-menu",
+        "show_search": true,
+        "search_position": "right",
+        "search_row": "top",
+        "show_country": true,
+        "country_selector_style": false,
+        "show_language": true,
+        "localization_font": "heading",
+        "localization_font_size": "0.875rem",
+        "localization_position": "right",
+        "localization_row": "top",
+        "section_width": "page-width",
+        "section_height": "standard",
+        "enable_sticky_header": "always",
+        "divider_width": 0,
+        "divider_size": "page-width",
+        "border_width": 0,
+        "actions_display_style": "icon",
+        "actions_font_size": "0.875rem",
+        "actions_font": "body",
+        "actions_text_case": "none",
+        "color_scheme_top": "scheme-1",
+        "color_scheme_bottom": "",
+        "color_scheme_transparent": "scheme-6",
+        "enable_transparent_header_home": false,
+        "home_color_scheme": "inverse",
+        "enable_transparent_header_product": false,
+        "product_color_scheme": "default",
+        "enable_transparent_header_collection": false,
+        "collection_color_scheme": "default"
+      }
+    },
+    "dmeluwRyb48F": {
+      "type": "dm-header-1",
+      "settings": {
+        "sectionPaddingTop_responsive_range_desktop": 8,
+        "sectionPaddingTop_responsive_range_mobile": 4,
+        "sectionPaddingBottom_responsive_range_desktop": 8,
+        "sectionPaddingBottom_responsive_range_mobile": 4,
+        "sectionPaddingLeft_responsive_range_desktop": 64,
+        "sectionPaddingLeft_responsive_range_mobile": 20,
+        "sectionPaddingRight_responsive_range_desktop": 64,
+        "sectionPaddingRight_responsive_range_mobile": 20,
+        "sectionMaxWidth_number": 1400,
+        "section_combination": "white",
+        "headerSticky_select": "sticky",
+        "borderColor_color": "#D9D9D9",
+        "announcementType_select": "swipe",
+        "announcementBackground_color": "#E39CC0",
+        "announcementTimer_number": 5000,
+        "announcementMarqueeSpeed_range": 100,
+        "announcementText_text": "🌙 Wake Up Glowing",
+        "announcementTextTextColor_color": "#FFFFFF",
+        "announcementTextTextStyle_font_desktop": "content-sm-semibold",
+        "announcementTextTextStyle_font_mobile": "content-sm-semibold",
+        "announcementTextTextAlign_text_alignment_desktop": "center",
+        "announcementTextTextAlign_text_alignment_mobile": "center",
+        "announcementText2_text": "⏰ Zero Effort Beauty",
+        "announcementText2TextColor_color": "#FFFFFF",
+        "announcementText2TextStyle_font_desktop": "content-sm-semibold",
+        "announcementText2TextStyle_font_mobile": "content-sm-semibold",
+        "announcementText2TextAlign_text_alignment_desktop": "center",
+        "announcementText2TextAlign_text_alignment_mobile": "center",
+        "announcementText3_text": "✨ Radiant Skin Overnight",
+        "announcementText3TextColor_color": "#FFFFFF",
+        "announcementText3TextStyle_font_desktop": "content-sm-semibold",
+        "announcementText3TextStyle_font_mobile": "content-sm-semibold",
+        "announcementText3TextAlign_text_alignment_desktop": "center",
+        "announcementText3TextAlign_text_alignment_mobile": "center",
+        "logo_media": "shopify://shop_images/4a0f959c-9cf9-4377-94f2-cdd831211c53.webp",
+        "logoLink_link": "/",
+        "logoLogoSize_responsive_range_desktop": 30,
+        "logoLogoSize_responsive_range_mobile": 38,
+        "menu_menu": "main-menu",
+        "navMenuTextTextColor_color": "#262626",
+        "navMenuTextTextStyle_font_desktop": "content-md-bold",
+        "navMenuTextTextStyle_font_mobile": "content-md-regular",
+        "navMenuTextTextAlign_text_alignment_desktop": "left",
+        "navMenuTextTextAlign_text_alignment_mobile": "left",
+        "buttonButtonRadius_number": 8,
+        "buttonButtonLink_link": "#scroll-to-product",
+        "buttonText_text": "Save 25% Today!",
+        "buttonTextTextStyle_font_desktop": "content-md-bold",
+        "buttonTextTextStyle_font_mobile": "content-sm-bold",
+        "buttonIconIconSize_responsive_range_desktop": 24,
+        "buttonIconIconSize_responsive_range_mobile": 24,
+        "cartIcon_icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100%\" height=\"100%\" viewBox=\"0 0 24 24\"><path fill=\"currentColor\" d=\"M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1m-9-1a2 2 0 0 1 4 0v1h-4Zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2Z\"/></svg>",
+        "cartIconIconColor_color": "#262626",
+        "cartIconIconSize_responsive_range_desktop": 28,
+        "cartIconIconSize_responsive_range_mobile": 28
+      }
+    }
+  },
+  "order": [
+    "dropmagic-style",
+    "header_announcements_9jGBFp",
+    "header_section",
+    "dmeluwRyb48F"
+  ]
+}

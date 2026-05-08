@@ -1,0 +1,246 @@
+/* Dropmagic Cart Drawer | Version: 2.4.1 — removal animation */
+/* Convention:
+   - Classes → styling only (TW utilities + state classes)
+   - data-role → JS DOM queries/manipulation
+   - IDs → unique element access
+   State classes: .active, .dm-is-empty, .hidden, .disabled, .cart__items--disabled
+*/
+
+/* ==============================
+   DRAWER STATE TRANSITIONS
+   ============================== */
+
+.dm_drawer {
+  visibility: hidden;
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: visibility 0.2s;
+}
+
+.dm_drawer.active {
+  visibility: visible;
+}
+
+[data-role="drawer-inner"] {
+  transform: translateX(100%);
+  transition: transform 0.2s ease;
+}
+
+.dm_drawer.active [data-role="drawer-inner"] {
+  transform: translateX(0);
+}
+
+dm-cart-drawer.dm-is-empty [data-role="drawer-footer"] {
+  display: none;
+}
+
+dm-cart-drawer.active #DM_CartDrawer-Overlay{
+display: block !important;
+}
+
+/* ==============================
+   SCROLLBAR
+   ============================== */
+
+[data-role="items-scroll"]::-webkit-scrollbar {
+  width: 3px;
+}
+
+[data-role="items-scroll"]::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--sidebar-foreground) 70%, transparent);
+  border-radius: 100px;
+}
+
+@media screen and (max-height: 650px) {
+  [data-role="items-scroll"] {
+    overflow: visible;
+  }
+  [data-role="drawer-inner"] {
+    overflow: scroll;
+  }
+}
+
+/* ==============================
+   SHINY CHECKOUT BUTTON EFFECT
+   ============================== */
+
+.shiny {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.shiny::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  animation: shine 2s infinite;
+  z-index: 1;
+}
+
+@keyframes shine {
+  0% { left: -75%; }
+  100% { left: 125%; }
+}
+
+/* ==============================
+   SHAKING CHECKOUT BUTTON EFFECT
+   ============================== */
+
+.shaking {
+  animation: shake 4s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 85% { transform: translateX(0); }
+  88% { transform: translateX(-3px) rotate(-1deg); }
+  90% { transform: translateX(3px) rotate(1deg); }
+  92% { transform: translateX(-3px) rotate(-0.5deg); }
+  94% { transform: translateX(3px) rotate(0.5deg); }
+  96% { transform: translateX(-2px); }
+  98% { transform: translateX(2px); }
+  100% { transform: translateX(0); }
+}
+
+/* ==============================
+   PROGRESS BAR BADGE ANIMATION
+   ============================== */
+
+[data-role="progress-icon"] {
+  animation: giftWiggle 4s ease-in-out infinite;
+  display: contents;
+}
+
+@keyframes giftWiggle {
+  0%, 80%, 100% { transform: rotate(0deg) scale(1); }
+  82% { transform: rotate(10deg) scale(1.15); }
+  84% { transform: rotate(-10deg) scale(1.15); }
+  86% { transform: rotate(8deg) scale(1.12); }
+  88% { transform: rotate(-8deg) scale(1.12); }
+  90% { transform: rotate(0deg) scale(1); }
+}
+
+/* ==============================
+   CART SAVINGS BADGE (brand colors fallback)
+   ============================== */
+
+[data-role="savings-badge"] {
+  background-color: var(--primary-50, var(--primary));
+  color: var(--btn-primary-classic-text, var(--primary-foreground));
+}
+
+/* ==============================
+   LOADING STATES
+   ============================== */
+
+.cart__items--disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ==============================
+   CART ITEM REMOVAL ANIMATION
+   ============================== */
+
+.dm-cart-item--removing {
+  opacity: 0 !important;
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  overflow: hidden;
+  transition: opacity 0.15s ease, max-height 0.25s ease 0.05s, padding 0.25s ease 0.05s, margin 0.25s ease 0.05s;
+}
+
+[data-role="loading"].dm-hidden {
+  display: none;
+}
+
+[data-role="loading"] svg {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ==============================
+   DISCOUNT FORM ERROR
+   ============================== */
+
+[data-role="discount-error"] {
+  display: none;
+}
+
+/* ==============================
+   QUANTITY BUTTON DISABLED STATE
+   ============================== */
+
+[data-role="qty-btn"].disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Hide native number input spinners and center text */
+dm-quantity-input input[type="number"] {
+  -moz-appearance: textfield;
+  text-align: center;
+}
+dm-quantity-input input[type="number"]::-webkit-outer-spin-button,
+dm-quantity-input input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ==============================
+   DETAILS/SUMMARY CARET ROTATION
+   ============================== */
+
+details[open] > summary .icon-caret,
+details[open] > summary svg {
+  transform: rotate(180deg);
+}
+
+/* ==============================
+   VISUALLY HIDDEN (a11y)
+   ============================== */
+
+.visually-hidden {
+  position: absolute !important;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  clip: rect(0 0 0 0);
+  word-wrap: normal !important;
+}
+
+/* ==============================
+   SCROLLBAR HIDE UTILITY
+   ============================== */
+
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

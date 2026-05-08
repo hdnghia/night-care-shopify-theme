@@ -1,0 +1,264 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer_m9NzUG": {
+      "type": "footer",
+      "blocks": {
+        "group_H6VpwJ": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 6,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "text_LWt8Pz": {
+              "type": "text",
+              "settings": {
+                "text": "<h2>Join our email list</h2>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h4",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_f9CFLH": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Get exclusive deals and early access to new products.</p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_LWt8Pz",
+            "text_f9CFLH"
+          ]
+        },
+        "email_signup_crihX7": {
+          "type": "email-signup",
+          "settings": {
+            "width": "fill",
+            "custom_width": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "heading": "",
+            "heading_preset": "h3",
+            "border_style": "all",
+            "border_width": 1,
+            "border_radius": 100,
+            "input_type_preset": "paragraph",
+            "style_class": "button-unstyled",
+            "display_type": "arrow",
+            "label": "Sign up",
+            "integrated_button": true,
+            "button_type_preset": "paragraph",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "group_H6VpwJ",
+        "email_signup_crihX7"
+      ],
+      "disabled": true,
+      "name": "t:names.footer",
+      "settings": {
+        "section_width": "page-width",
+        "gap": 20,
+        "color_scheme": "scheme-1",
+        "padding-block-start": 30,
+        "padding-block-end": 30
+      }
+    },
+    "footer_utilities_jLGE8U": {
+      "type": "footer-utilities",
+      "blocks": {
+        "footer_copyright_jweRK8": {
+          "type": "footer-copyright",
+          "settings": {
+            "show_powered_by": true,
+            "font_size": "0.75rem",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "footer_policy_list_VCdnpa": {
+          "type": "footer-policy-list",
+          "settings": {
+            "font_size": "0.75rem",
+            "case": "none"
+          },
+          "blocks": {}
+        },
+        "social_links_Ew63Kq": {
+          "type": "social-links",
+          "settings": {
+            "facebook_url": "https://www.facebook.com/",
+            "instagram_url": "https://www.instagram.com/",
+            "youtube_url": "https://www.youtube.com/",
+            "tiktok_url": "https://www.tiktok.com/",
+            "twitter_url": "https://x.com/",
+            "threads_url": "",
+            "linkedin_url": "",
+            "bluesky_url": "",
+            "snapchat_url": "",
+            "pinterest_url": "",
+            "tumblr_url": "",
+            "vimeo_url": "",
+            "custom_url": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "footer_copyright_jweRK8",
+        "footer_policy_list_VCdnpa",
+        "social_links_Ew63Kq"
+      ],
+      "disabled": true,
+      "name": "t:names.utilities",
+      "settings": {
+        "section_width": "page-width",
+        "gap": 24,
+        "divider_thickness": 0,
+        "color_scheme": "",
+        "padding-block-start": 20,
+        "padding-block-end": 48
+      }
+    },
+    "bRar1CMj3": {
+      "type": "dm-footer-2",
+      "settings": {
+        "sectionBackground_color": "#FAFAFA",
+        "sectionPaddingTop_responsive_range_desktop": 56,
+        "sectionPaddingTop_responsive_range_mobile": 56,
+        "sectionPaddingBottom_responsive_range_desktop": 20,
+        "sectionPaddingBottom_responsive_range_mobile": 20,
+        "sectionPaddingLeft_responsive_range_desktop": 64,
+        "sectionPaddingLeft_responsive_range_mobile": 18,
+        "sectionPaddingRight_responsive_range_desktop": 64,
+        "sectionPaddingRight_responsive_range_mobile": 18,
+        "sectionMaxWidth_number": 1400,
+        "section_combination": "light",
+        "separatorColor_color": "#D9D9D9",
+        "paymentBadgeDirection_responsive_select_desktop": "center",
+        "paymentBadgeDirection_responsive_select_mobile": "center",
+        "paymentBadgeHide_checkbox": false,
+        "paymentBadgeBadgeWidth_responsive_range_desktop": 40,
+        "paymentBadgeBadgeWidth_responsive_range_mobile": 40,
+        "description_text": "Wake up to radiant, firm skin effortlessly, every single morning.",
+        "descriptionTextColor_color": "#737373",
+        "descriptionTextStyle_font_desktop": "content-md-regular",
+        "descriptionTextStyle_font_mobile": "content-md-regular",
+        "descriptionTextAlign_text_alignment_desktop": "left",
+        "descriptionTextAlign_text_alignment_mobile": "left",
+        "copyright_text": "© 2024 Overnight Glow. All Rights Reserved.",
+        "copyrightTextColor_color": "#262626",
+        "copyrightTextStyle_font_desktop": "content-sm-regular",
+        "copyrightTextStyle_font_mobile": "content-sm-regular",
+        "copyrightTextAlign_text_alignment_desktop": "left",
+        "copyrightTextAlign_text_alignment_mobile": "left",
+        "logo_media": "shopify://shop_images/4a0f959c-9cf9-4377-94f2-cdd831211c53.webp",
+        "logoLink_link": "/",
+        "logoLogoSize_responsive_range_desktop": 44,
+        "logoLogoSize_responsive_range_mobile": 40,
+        "menu_menu": "footer",
+        "navMenuTextTextColor_color": "#262626",
+        "navMenuTextTextStyle_font_desktop": "content-md-semibold",
+        "navMenuTextTextStyle_font_mobile": "content-md-semibold",
+        "navMenuTextTextAlign_text_alignment_desktop": "left",
+        "navMenuTextTextAlign_text_alignment_mobile": "left"
+      }
+    },
+    "dm-cart-drawer": {
+      "type": "dm-cart-drawer",
+      "name": "Cart Drawer",
+      "settings": {}
+    }
+  },
+  "order": [
+    "footer_m9NzUG",
+    "footer_utilities_jLGE8U",
+    "bRar1CMj3",
+    "dm-cart-drawer"
+  ]
+}
