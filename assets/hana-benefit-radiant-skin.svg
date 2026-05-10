@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="336" height="450" viewBox="0 0 336 450" role="img" aria-labelledby="title desc">
+  <title id="title">Despierta con piel radiante</title>
+  <desc id="desc">Tarjeta de beneficio con icono de rostro y texto Despierta con piel radiante.</desc>
+  <rect width="336" height="450" rx="24" fill="#f1e6e3"/>
+  <g fill="none" stroke="#8d6370" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+    <path d="M104 116c-5-30 18-52 46-50 16 1 28 9 38 21"/>
+    <path d="M118 88c-28-13-54 6-54 34 0 14 8 25 18 31"/>
+    <path d="M197 91c21 18 32 42 27 70"/>
+    <path d="M190 109c-18 36-53 46-74 48"/>
+    <path d="M180 147c12 8 27 11 43 10"/>
+    <path d="M190 130c-8 9-19 15-31 18"/>
+    <path d="M119 157c-12 17-15 38-11 62"/>
+    <path d="M149 164c-9 18-21 32-39 43"/>
+    <path d="M170 161c2 21 13 39 33 53"/>
+    <path d="M210 117c16 4 29 16 34 32"/>
+    <path d="M211 140h21"/>
+    <path d="M242 132c10 11 22 13 36 2"/>
+    <path d="M263 75l9 19 19 9-19 9-9 19-9-19-19-9 19-9z"/>
+    <path d="M286 137l8 16 16 8-16 8-8 16-8-16-16-8 16-8z"/>
+    <path d="M254 202l6 13 13 6-13 6-6 13-6-13-13-6 13-6z"/>
+  </g>
+  <text x="168" y="307" text-anchor="middle" fill="#8d6370" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="800" letter-spacing=".5">
+    <tspan x="168">DESPIERTA CON</tspan>
+    <tspan x="168" dy="48">PIEL RADIANTE</tspan>
+  </text>
+</svg>

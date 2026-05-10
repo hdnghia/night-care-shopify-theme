@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="336" height="450" viewBox="0 0 336 450" role="img" aria-labelledby="title desc">
+  <title id="title">Afirma y suaviza durante la noche</title>
+  <desc id="desc">Tarjeta de beneficio con flechas, ondas y texto Afirma y suaviza durante la noche.</desc>
+  <rect width="336" height="450" rx="24" fill="#f1e6e3"/>
+  <g fill="none" stroke="#8d6370" stroke-linecap="round" stroke-linejoin="round" stroke-width="5">
+    <path d="M119 100h-52"/>
+    <path d="M84 83l-19 17 19 17"/>
+    <path d="M217 100h52"/>
+    <path d="M252 83l19 17-19 17"/>
+    <path d="M75 154c23-18 46 18 69 0s46 18 69 0 46 18 69 0"/>
+    <path d="M75 183c23-18 46 18 69 0s46 18 69 0 46 18 69 0"/>
+    <path d="M75 212c23-18 46 18 69 0s46 18 69 0 46 18 69 0"/>
+  </g>
+  <text x="168" y="298" text-anchor="middle" fill="#8d6370" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="800" letter-spacing=".5">
+    <tspan x="168">AFIRMA Y</tspan>
+    <tspan x="168" dy="48">SUAVIZA</tspan>
+    <tspan x="168" dy="48">DURANTE LA NOCHE</tspan>
+  </text>
+</svg>

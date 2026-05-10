@@ -1,0 +1,78 @@
+{% comment %}
+  StarRating — decorative average display or filled row.
+  @param rating {number|string} 0–5 (decimals OK for summary average)
+  @param size {string} sm | md | lg
+  @param discrete {boolean} when true, render exactly 5 icons (integer ratings); avoids %-clip misalignment for whole-star scores
+{% endcomment %}
+{% liquid
+  if rating == blank
+    assign r = 5
+  else
+    assign r = rating | plus: 0
+  endif
+  if r > 5
+    assign r = 5
+  elsif r < 0
+    assign r = 0
+  endif
+  assign pct = r | times: 100 | divided_by: 5
+  assign stars_on = r | floor
+  if stars_on > 5
+    assign stars_on = 5
+  elsif stars_on < 0
+    assign stars_on = 0
+  endif
+  case size
+    when 'lg'
+      assign dim = 28
+      assign gap = 5
+    when 'md'
+      assign dim = 18
+      assign gap = 3
+    else
+      assign dim = 14
+      assign gap = 4
+  endcase
+%}
+{% if discrete %}
+  <div
+    class="dm-review-star-rating dm-review-star-rating--{{ size }} dm-review-star-rating--discrete"
+    role="img"
+    aria-label="{{ stars_on }} out of 5 stars"
+  >
+    <div class="dm-review-star-rating__discrete-row" style="display:flex;gap:{{ gap }}px;align-items:center;" aria-hidden="true">
+      {% for i in (1..5) %}
+        <span style="color: {% if i <= stars_on %}#c9a227{% else %}rgba(31, 23, 21, 0.15){% endif %};line-height:0;flex-shrink:0;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="{{ dim }}" height="{{ dim }}" viewBox="0 0 24 24" fill="currentColor" focusable="false">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </span>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  <div
+    class="dm-review-star-rating dm-review-star-rating--{{ size }}"
+    role="img"
+    aria-label="{{ r }} out of 5 stars"
+  >
+    <div class="dm-review-star-rating__shell" aria-hidden="true">
+      <div class="dm-review-star-rating__track">
+        {% for _ in (1..5) %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="{{ dim }}" height="{{ dim }}" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        {% endfor %}
+      </div>
+      <div class="dm-review-star-rating__fill" style="width: {{ pct }}%;">
+        <span class="dm-review-star-rating__fill-inner">
+          {% for _ in (1..5) %}
+            <svg xmlns="http://www.w3.org/2000/svg" width="{{ dim }}" height="{{ dim }}" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+          {% endfor %}
+        </span>
+      </div>
+    </div>
+  </div>
+{% endif %}

@@ -1,0 +1,35 @@
+{% comment %}
+  Feature strip: image + text flushed together; pair uses row-reverse when flip (image right).
+{% endcomment %}
+<div class="dm-hana-hiw__row" {% if block %}{{ block.shopify_attributes }}{% endif %}>
+  <div class="dm-hana-hiw__pair{% if flip %} dm-hana-hiw__pair--flip{% endif %}">
+    <div class="dm-hana-hiw__visual">
+      {% if image != blank %}
+        {{
+          image
+          | image_url: width: 1400
+          | image_tag:
+            class: 'dm-hana-hiw__img',
+            widths: '400, 700, 1000, 1400',
+            sizes: '(min-width: 750px) 36vw, 100vw',
+            alt: alt,
+            loading: 'lazy'
+        }}
+      {% elsif image_asset != blank %}
+        <img
+          class="dm-hana-hiw__img"
+          src="{{ image_asset | asset_url }}"
+          alt="{{ alt | escape }}"
+          loading="lazy"
+          decoding="async">
+      {% endif %}
+    </div>
+    <div class="dm-hana-hiw__copy">
+      <div class="dm-hana-hiw__copy-inner">
+        <p class="dm-hana-hiw__label">{{ label | escape }}</p>
+        <h3 class="dm-hana-hiw__heading-feature">{{ title | escape }}</h3>
+        <div class="dm-hana-hiw__desc">{{ description | newline_to_br }}</div>
+      </div>
+    </div>
+  </div>
+</div>

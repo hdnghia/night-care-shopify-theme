@@ -1,0 +1,112 @@
+{% comment %}
+  HANA — why choose. Edit in Theme editor; banner defaults to theme asset `hana-hydration-banner.png`.
+{% endcomment %}
+
+<section class="dm-hana-why dm-section" aria-labelledby="dm-hana-why-heading-{{ section.id }}">
+  {% render 'dm-hana-why-inner',
+    section_id: section.id,
+    heading_lead: section.settings.heading_lead,
+    heading_highlight: section.settings.heading_highlight,
+    intro: section.settings.intro,
+    banner_image: section.settings.banner_image,
+    banner_alt: section.settings.banner_image_alt,
+    blocks: section.blocks,
+    full_bleed_banner: false %}
+</section>
+
+{% schema %}
+{
+  "name": "HANA why choose",
+  "tag": "section",
+  "class": "dm-section",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading_lead",
+      "label": "Heading (before highlight)",
+      "default": "Why everyone chooses"
+    },
+    {
+      "type": "text",
+      "id": "heading_highlight",
+      "label": "Heading (highlight)",
+      "default": "HANA™ Collagen Mask"
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Intro paragraph",
+      "default": "Wake up with skin that feels firmer, brighter, and deeply hydrated. HANA’s overnight formula helps support elasticity, smooth the look of fine lines, and lock in moisture throughout the night."
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Banner image",
+      "info": "Optional. Upload to replace the default theme asset."
+    },
+    {
+      "type": "text",
+      "id": "banner_image_alt",
+      "label": "Banner image alt text",
+      "default": "HANA collagen night mask hydration banner"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefit",
+      "name": "Benefit",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Benefit title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Benefit description."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HANA why choose",
+      "blocks": [
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Collagen Support",
+            "description": "Collagen extract helps support skin elasticity and resilience, leaving the skin feeling firmer and more youthful."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Deep Hydration Complex",
+            "description": "Hyaluronic acid and ceramides help deliver deep hydration, retain moisture, and support the skin barrier."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Niacinamide Brightening Care",
+            "description": "Niacinamide, also known as vitamin B3, helps improve the look of dullness and uneven tone for a more radiant-looking complexion."
+          }
+        },
+        {
+          "type": "benefit",
+          "settings": {
+            "title": "Gentle Yet Effective",
+            "description": "Adenosine and vitamin E help smooth the look of fine lines, improve skin texture, and provide antioxidant care."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

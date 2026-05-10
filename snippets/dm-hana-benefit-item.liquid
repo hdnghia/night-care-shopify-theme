@@ -1,0 +1,17 @@
+{% comment %}
+  Benefit row: check + title (same row), description under title column.
+  Pass block for Theme Editor attributes when rendered from a section block.
+{% endcomment %}
+<div class="dm-hana-why__benefit" {% if block %}{{ block.shopify_attributes }}{% endif %}>
+  <div class="dm-hana-why__benefit-row">
+    <span class="dm-hana-why__check" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+    </span>
+    <h3 class="dm-hana-why__benefit-title">{{ title | escape }}</h3>
+    <div class="dm-hana-why__benefit-desc">
+      <p>{{ description | newline_to_br }}</p>
+    </div>
+  </div>
+</div>

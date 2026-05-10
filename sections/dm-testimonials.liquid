@@ -1,0 +1,370 @@
+{% comment %}
+  HANA testimonials grid — full-width band, centered container, 6 cards (3 / 2 / 1 cols).
+{% endcomment %}
+<section class="dm-testimonials dm-section" style="background: {{ section.settings.background_color }};">
+  <div class="dm-testimonials__inner">
+    <h2 class="dm-testimonials__heading" id="dm-testimonials-heading-{{ section.id }}">
+      <span class="dm-testimonials__heading-lead">{{ section.settings.heading_lead | escape }}</span><span class="dm-testimonials__heading-accent">{{ section.settings.heading_accent | escape }}</span>
+    </h2>
+
+    <div class="dm-testimonials__grid">
+      {% for block in section.blocks %}
+        {% if block.type == 'testimonial' %}
+          {% liquid
+            assign fallback_avatar = ''
+            case forloop.index
+              when 1
+                assign fallback_avatar = 'hana-79HSBJvN3_mid_80x_e1425093-5316-488b-b89c-e8e8ded5a1df.webp'
+              when 2
+                assign fallback_avatar = 'hana-27098407913719840791371_856x_cc65e472-8fc6-45be-bcc5-54676ba7b9dc.webp'
+              when 3
+                assign fallback_avatar = 'hana-86841607913714160791371_856x_3d0451b8-dd9c-4931-aca3-5e27ebe9ec16.webp'
+              when 4
+                assign fallback_avatar = 'hana-download_53fd7c58-776a-44aa-9e41-f6156eacde28.jpg'
+              when 5
+                assign fallback_avatar = 'hana-download.jpg'
+              else
+                assign fallback_avatar = 'hana-79HSBJvN3_mid_80x_e1425093-5316-488b-b89c-e8e8ded5a1df.webp'
+            endcase
+
+            assign avatar_asset = ''
+            if block.settings.avatar == blank
+              assign avatar_asset = fallback_avatar
+            endif
+          %}
+          {% render 'dm-testimonial-card',
+            title: block.settings.title,
+            review: block.settings.review,
+            customer_name: block.settings.customer_name,
+            location: block.settings.location,
+            avatar: block.settings.avatar,
+            avatar_asset: avatar_asset,
+            block: block %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .dm-testimonials {
+    width: 100%;
+    margin: 0;
+    padding: clamp(3rem, 7vw, 5rem) max(1rem, env(safe-area-inset-left, 0px)) clamp(3rem, 7vw, 5rem)
+      max(1rem, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+    background: transparent;
+  }
+
+  .dm-testimonials__inner {
+    max-width: 72rem;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .dm-testimonials__heading {
+    margin: 0 auto clamp(2rem, 4.5vw, 3rem);
+    max-width: 28rem;
+    text-align: center;
+    font-size: clamp(1.85rem, 4.5vw, 2.65rem);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
+    color: #24191d;
+    font-family: ui-serif, Georgia, 'Times New Roman', serif;
+  }
+
+  .dm-testimonials__heading-lead {
+    font-weight: 500;
+    color: #24191d;
+  }
+
+  .dm-testimonials__heading-accent {
+    font-style: italic;
+    font-weight: 500;
+    color: #9e3a66;
+  }
+
+  .dm-testimonials__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.35rem, 3.5vw, 2.25rem);
+    align-items: stretch;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dm-testimonials__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .dm-testimonials__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .dm-testimonial-card {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: clamp(1.65rem, 3.2vw, 2.2rem) clamp(1.35rem, 2.8vw, 1.85rem) clamp(1.35rem, 2.8vw, 1.75rem);
+    border-radius: 22px;
+    background: #fff;
+    border: 1px solid rgba(158, 58, 102, 0.1);
+    box-shadow: 0 14px 42px rgba(31, 23, 21, 0.06);
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .dm-testimonial-card__quote-icon {
+    position: absolute;
+    top: clamp(1rem, 2.2vw, 1.35rem);
+    right: clamp(1rem, 2.2vw, 1.35rem);
+    color: rgba(158, 58, 102, 0.14);
+    pointer-events: none;
+  }
+
+  .dm-testimonial-card__top {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.65rem, 1.6vw, 0.9rem);
+    width: 100%;
+    padding-left: 0.35rem;
+    padding-right: 0.35rem;
+    padding-top: 0.15rem;
+    box-sizing: border-box;
+  }
+
+  .dm-testimonial-stars {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: #c9a574;
+    flex-shrink: 0;
+  }
+
+  .dm-testimonial-stars--sm {
+    gap: 3px;
+    color: #c9a574;
+  }
+
+  .dm-testimonial-card__title {
+    margin: 0;
+    margin-top: 0.15rem;
+    font-size: clamp(1.05rem, 2.2vw, 1.18rem);
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: #1f1715;
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+
+  .dm-testimonial-card__review {
+    margin: 0;
+    margin-top: 0.35rem;
+    flex: 1 1 auto;
+    max-width: 36rem;
+    width: 100%;
+  }
+
+  .dm-testimonial-card__review p {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.68;
+    font-weight: 400;
+    color: #534a4f;
+  }
+
+  .dm-testimonial-card__divider {
+    width: 100%;
+    max-width: 12rem;
+    margin: clamp(1.15rem, 2.5vw, 1.5rem) auto clamp(1rem, 2vw, 1.25rem);
+    border: none;
+    border-top: 1px solid rgba(31, 23, 21, 0.08);
+  }
+
+  .dm-testimonial-card__footer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .dm-testimonial-card__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 14px rgba(31, 23, 21, 0.1);
+  }
+
+  .dm-testimonial-card__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .dm-testimonial-card__name {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #24191d;
+    line-height: 1.25;
+  }
+
+  .dm-testimonial-card__location {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #7a6e73;
+    line-height: 1.3;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dm-testimonial-card {
+      box-shadow: 0 8px 24px rgba(31, 23, 21, 0.05);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "HANA testimonials",
+  "tag": "section",
+  "class": "dm-section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fdf8fa"
+    },
+    {
+      "type": "text",
+      "id": "heading_lead",
+      "label": "Heading (first part)",
+      "default": "Transform "
+    },
+    {
+      "type": "text",
+      "id": "heading_accent",
+      "label": "Heading (accent part)",
+      "default": "your skin"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar",
+          "info": "Optional. Uses a theme placeholder per card order when empty."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Review title",
+          "default": "Review title"
+        },
+        {
+          "type": "textarea",
+          "id": "review",
+          "label": "Review text",
+          "default": "Review quote."
+        },
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer name",
+          "default": "Name"
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location",
+          "default": "City"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HANA testimonials",
+      "blocks": [
+        {
+          "type": "testimonial",
+          "settings": {
+            "title": "My skin looked fresher in two weeks",
+            "review": "I had been looking for something simple to add to my nighttime routine. HANA made my skin feel softer, smoother, and more refreshed.",
+            "customer_name": "Francisca M.",
+            "location": "Santiago"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "title": "I noticed the difference the next morning",
+            "review": "The first time I used it overnight, my skin felt incredibly soft in the morning. Now I do not want to skip it.",
+            "customer_name": "Catalina V.",
+            "location": "Ñuñoa"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "title": "My friends asked about my glow",
+            "review": "My skin started looking more hydrated and fresh. My friends kept asking what I changed in my routine.",
+            "customer_name": "Patricia S.",
+            "location": "Las Condes"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "title": "My favorite final skincare step",
+            "review": "I use it after my usual skincare routine, and it helps my skin feel comfortable, moisturized, and smooth by morning.",
+            "customer_name": "Isidora T.",
+            "location": "Vitacura"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "title": "The missing piece in my routine",
+            "review": "I felt like my skin needed extra hydration at night. HANA became the simple step that made my routine feel complete.",
+            "customer_name": "Javiera R.",
+            "location": "Viña del Mar"
+          }
+        },
+        {
+          "type": "testimonial",
+          "settings": {
+            "title": "My skin feels so soft now",
+            "review": "After using it at night, my skin feels softer, fresher, and more hydrated when I wake up.",
+            "customer_name": "Bárbara L.",
+            "location": "Concepción"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="336" height="450" viewBox="0 0 336 450" role="img" aria-labelledby="title desc">
+  <title id="title">Hidratación por 24 horas</title>
+  <desc id="desc">Tarjeta de beneficio con gota e iconos de hidratación y texto Hidratación por 24 horas.</desc>
+  <rect width="336" height="450" rx="24" fill="#f1e6e3"/>
+  <g fill="none" stroke="#8d6370" stroke-linecap="round" stroke-linejoin="round" stroke-width="5">
+    <path d="M168 66c-28 39-43 67-43 92 0 32 20 53 43 53s43-21 43-53c0-25-15-53-43-92z"/>
+    <path d="M173 178c14-5 22-15 23-31"/>
+    <path d="M89 140l5 14 14 5-14 5-5 14-5-14-14-5 14-5z"/>
+    <path d="M247 140l5 14 14 5-14 5-5 14-5-14-14-5 14-5z"/>
+    <path d="M275 97l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/>
+    <path d="M61 97l4 10 10 4-10 4-4 10-4-10-10-4 10-4z"/>
+    <path d="M83 231h170"/>
+    <path d="M75 247h186"/>
+    <path d="M67 263h202"/>
+    <path d="M101 304c-16 22-22 34-22 47 0 17 11 28 22 28s22-11 22-28c0-13-6-25-22-47z"/>
+    <path d="M168 304c-16 22-22 34-22 47 0 17 11 28 22 28s22-11 22-28c0-13-6-25-22-47z"/>
+    <path d="M235 304c-16 22-22 34-22 47 0 17 11 28 22 28s22-11 22-28c0-13-6-25-22-47z"/>
+    <path d="M102 285h1"/>
+    <path d="M135 285h1"/>
+    <path d="M168 285h1"/>
+    <path d="M201 285h1"/>
+    <path d="M234 285h1"/>
+  </g>
+  <text x="168" y="344" text-anchor="middle" fill="#8d6370" font-family="Arial, Helvetica, sans-serif" font-size="32" font-weight="800" letter-spacing=".5">
+    <tspan x="168">HIDRATACIÓN</tspan>
+    <tspan x="168" dy="46">POR 24 HORAS</tspan>
+  </text>
+</svg>

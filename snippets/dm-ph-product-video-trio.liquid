@@ -1,0 +1,241 @@
+{% comment %}
+  Three product videos — deep pink animated backdrop (below care highlights on before/after section).
+{% endcomment %}
+<style>
+  .dm-ph-video-trio {
+    --dm-vt-base: rgb(197, 98, 147);
+    --dm-vt-deep: rgb(180, 86, 134);
+    --dm-vt-rich: rgb(194, 102, 145);
+    --dm-vt-bright: rgb(202, 119, 155);
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    margin: 0 0 clamp(1.5rem, 4vw, 2.25rem);
+    padding: clamp(2rem, 5vw, 3.25rem) max(16px, env(safe-area-inset-left, 0px)) clamp(2.25rem, 5vw, 3.5rem)
+      max(16px, env(safe-area-inset-right, 0px));
+    overflow: hidden;
+    box-sizing: border-box;
+    background-color: var(--dm-vt-base);
+  }
+
+  @media screen and (min-width: 768px) {
+    .dm-ph-video-trio {
+      padding-left: max(56px, env(safe-area-inset-left, 0px));
+      padding-right: max(56px, env(safe-area-inset-right, 0px));
+    }
+  }
+
+  /* Flush with care highlights above (no gap between white band and video block) */
+  .dm-before-after > .dm-ph-care-highlights--above-slider + .dm-ph-video-trio {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .dm-ph-video-trio__aurora {
+    position: absolute;
+    inset: -40% -20%;
+    z-index: 0;
+    background: linear-gradient(
+      125deg,
+      var(--dm-vt-deep) 0%,
+      var(--dm-vt-base) 22%,
+      var(--dm-vt-rich) 48%,
+      var(--dm-vt-bright) 72%,
+      var(--dm-vt-deep) 100%
+    );
+    background-size: 280% 280%;
+    animation: dm-ph-video-trio-aurora 18s ease-in-out infinite;
+    opacity: 1;
+    filter: blur(1px);
+  }
+
+  @keyframes dm-ph-video-trio-aurora {
+    0%,
+    100% {
+      background-position: 0% 40%;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    33% {
+      background-position: 100% 60%;
+      transform: translate3d(2%, -1%, 0) scale(1.03);
+    }
+    66% {
+      background-position: 40% 0%;
+      transform: translate3d(-1%, 2%, 0) scale(1.02);
+    }
+  }
+
+  .dm-ph-video-trio__orb {
+    position: absolute;
+    z-index: 0;
+    border-radius: 50%;
+    filter: blur(52px);
+    opacity: 0.45;
+    pointer-events: none;
+    animation: dm-ph-video-trio-float 14s ease-in-out infinite;
+  }
+
+  .dm-ph-video-trio__orb--a {
+    width: min(42vw, 380px);
+    height: min(42vw, 380px);
+    top: -12%;
+    left: -8%;
+    background: radial-gradient(circle at 30% 30%, rgba(199, 91, 135, 0.65), transparent 70%);
+    animation-delay: -2s;
+  }
+
+  .dm-ph-video-trio__orb--b {
+    width: min(38vw, 340px);
+    height: min(38vw, 340px);
+    bottom: -18%;
+    right: -6%;
+    background: radial-gradient(circle at 70% 60%, rgba(158, 58, 102, 0.55), transparent 72%);
+    animation-delay: -5s;
+    animation-duration: 17s;
+  }
+
+  .dm-ph-video-trio__orb--c {
+    width: min(30vw, 260px);
+    height: min(30vw, 260px);
+    top: 35%;
+    right: 8%;
+    left: auto;
+    background: radial-gradient(circle at 50% 50%, rgba(255, 140, 185, 0.35), transparent 68%);
+    animation-delay: -8s;
+    animation-duration: 20s;
+  }
+
+  @keyframes dm-ph-video-trio-float {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(12px, -18px, 0);
+    }
+  }
+
+  .dm-ph-video-trio__grain {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.07;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: soft-light;
+  }
+
+  .dm-ph-video-trio__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .dm-ph-video-trio__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1rem, 3vw, 1.35rem);
+  }
+
+  @media screen and (min-width: 900px) {
+    .dm-ph-video-trio__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+
+  @media screen and (min-width: 600px) and (max-width: 899px) {
+    .dm-ph-video-trio__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dm-ph-video-trio__cell:last-child {
+      grid-column: 1 / -1;
+      max-width: min(100%, 520px);
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .dm-ph-video-trio__cell {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(20, 8, 14, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow:
+      0 12px 40px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    aspect-ratio: 9 / 16;
+    max-height: min(78vh, 640px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .dm-ph-video-trio__cell video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dm-ph-video-trio__aurora,
+    .dm-ph-video-trio__orb {
+      animation: none;
+    }
+
+    .dm-ph-video-trio__aurora {
+      background-position: 50% 50%;
+    }
+  }
+</style>
+
+<section class="dm-ph-video-trio" aria-label="Product videos">
+  <div class="dm-ph-video-trio__aurora" aria-hidden="true"></div>
+  <div class="dm-ph-video-trio__orb dm-ph-video-trio__orb--a" aria-hidden="true"></div>
+  <div class="dm-ph-video-trio__orb dm-ph-video-trio__orb--c" aria-hidden="true"></div>
+  <div class="dm-ph-video-trio__orb dm-ph-video-trio__orb--b" aria-hidden="true"></div>
+  <div class="dm-ph-video-trio__grain" aria-hidden="true"></div>
+
+  <div class="dm-ph-video-trio__inner">
+    <div class="dm-ph-video-trio__grid">
+      <div class="dm-ph-video-trio__cell">
+        <video
+          src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}"
+          muted
+          playsinline
+          loop
+          autoplay
+          preload="metadata"
+          disablepictureinpicture
+          aria-label="Product video 1"></video>
+      </div>
+      <div class="dm-ph-video-trio__cell">
+        <video
+          src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}"
+          muted
+          playsinline
+          loop
+          autoplay
+          preload="metadata"
+          disablepictureinpicture
+          aria-label="Product video 3"></video>
+      </div>
+      <div class="dm-ph-video-trio__cell">
+        <video
+          src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}"
+          muted
+          playsinline
+          loop
+          autoplay
+          preload="metadata"
+          disablepictureinpicture
+          aria-label="Product video 2"></video>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,260 @@
+<script
+  src="{{ 'comparison-slider.js' | asset_url }}"
+  type="module"
+  fetchpriority="low"
+></script>
+
+{% liquid
+  assign before_media = section.settings.before_image
+  assign after_media = section.settings.after_image
+
+  assign dm_before_asset = ''
+  assign dm_after_asset = ''
+
+  if before_media == blank
+    assign dm_before_asset = 'hana-6_e3db29dc-ff48-4ec9-ab4a-925dc82efdf6.png'
+  endif
+
+  if after_media == blank
+    assign dm_after_asset = 'hana-6_2_6368f9fe-3fdf-4936-86a7-265d889d8279.png'
+  endif
+
+  if before_media == blank and dm_before_asset == blank and product.media.size > 1
+    assign before_media = product.media[1].preview_image
+  endif
+
+  if after_media == blank and dm_after_asset == blank and product.media.size > 2
+    assign after_media = product.media[2].preview_image
+  elsif after_media == blank and dm_after_asset == blank
+    assign after_media = product.featured_image
+  endif
+
+  assign before_media_2 = section.settings.before_image_secondary
+  assign after_media_2 = section.settings.after_image_secondary
+  assign dm_before_asset_2 = ''
+  assign dm_after_asset_2 = ''
+
+  if before_media_2 == blank
+    assign dm_before_asset_2 = 'hana-6_ce19129a-9f1e-4bc3-a3dc-7e587fc0168a.png'
+  endif
+
+  if after_media_2 == blank
+    assign dm_after_asset_2 = 'hana-6_2_618a986e-fb88-4047-9443-99a4cc774d9d.png'
+  endif
+%}
+
+<section
+  class="dm-before-after"
+  style="background: {{ section.settings.background }};"
+>
+  {% render 'dm-ph-product-care-highlights', placement: 'above-slider' %}
+  {% render 'dm-ph-product-video-trio' %}
+  {% if section.settings.show_hana_why %}
+    <div class="dm-hana-why dm-section" aria-labelledby="dm-hana-why-heading-{{ section.id }}-embed">
+      {% render 'dm-hana-why-inner',
+        section_id: section.id | append: '-embed',
+        heading_lead: section.settings.hana_heading_lead,
+        heading_highlight: section.settings.hana_heading_highlight,
+        intro: section.settings.hana_intro,
+        banner_image: section.settings.hana_banner_image,
+        banner_alt: section.settings.hana_banner_image_alt,
+        blocks: section.blocks,
+        full_bleed_banner: false %}
+    </div>
+  {% endif %}
+  {% if section.settings.show_how_it_works %}
+    {% render 'dm-hana-how-it-works-inner',
+      section_id: section.id | append: '-hiw',
+      section_heading: section.settings.hiw_heading %}
+  {% endif %}
+  {% if section.settings.title != blank %}
+    <div class="dm-before-after__inner">
+      <div class="dm-before-after__heading">
+        <h2>{{ section.settings.title }}</h2>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="dm-before-after__sliders-fullbleed">
+    {% render 'dm-before-after-slider-unit',
+      aspect_ratio: section.settings.aspect_ratio,
+      before_media: before_media,
+      after_media: after_media,
+      dm_before_asset: dm_before_asset,
+      dm_after_asset: dm_after_asset,
+      before_label: section.settings.before_label,
+      after_label: section.settings.after_label,
+      slider_label: section.settings.slider_label,
+      slider_extra_class: '' %}
+
+    {% if section.settings.show_secondary_slider %}
+      {% render 'dm-before-after-slider-unit',
+        aspect_ratio: section.settings.aspect_ratio,
+        before_media: before_media_2,
+        after_media: after_media_2,
+        dm_before_asset: dm_before_asset_2,
+        dm_after_asset: dm_after_asset_2,
+        before_label: section.settings.before_label_secondary,
+        after_label: section.settings.after_label_secondary,
+        slider_label: section.settings.slider_label_secondary,
+        slider_extra_class: 'dm-before-after__slider--follow' %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Before after slider",
+  "tag": "section",
+  "class": "dm-section",
+  "settings": [
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFF8F5" },
+    { "type": "text", "id": "title", "label": "Title", "default": "See The Overnight Difference", "info": "Shown above the sliders (optional). Sliders are full viewport width." },
+    {
+      "type": "image_picker",
+      "id": "before_image",
+      "label": "Before image (top slider)",
+      "info": "If empty, uses theme asset hana-6_2_618a986e… (front-facing portrait)."
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image",
+      "label": "After image (top slider)",
+      "info": "If empty, uses theme asset hana-6_2_6368f9fe… (detail profile)."
+    },
+    { "type": "text", "id": "before_label", "label": "Before label (top slider)", "default": "Before" },
+    { "type": "text", "id": "after_label", "label": "After label (top slider)", "default": "After" },
+    { "type": "text", "id": "slider_label", "label": "Slider accessibility label (top)", "default": "Compare before and after images" },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Aspect ratio",
+      "default": "4 / 3",
+      "options": [
+        { "value": "16 / 9", "label": "Wide" },
+        { "value": "4 / 3", "label": "Standard" },
+        { "value": "1 / 1", "label": "Square" }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Second slider (below top slider)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_secondary_slider",
+      "label": "Show second comparison slider",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "before_image_secondary",
+      "label": "Before image (second slider)",
+      "info": "If empty, uses theme asset hana-6_ce19129a…"
+    },
+    {
+      "type": "image_picker",
+      "id": "after_image_secondary",
+      "label": "After image (second slider)",
+      "info": "If empty, uses theme asset hana-6_e3db29dc…"
+    },
+    {
+      "type": "text",
+      "id": "before_label_secondary",
+      "label": "Before label (second slider)",
+      "default": "Before"
+    },
+    {
+      "type": "text",
+      "id": "after_label_secondary",
+      "label": "After label (second slider)",
+      "default": "After"
+    },
+    {
+      "type": "text",
+      "id": "slider_label_secondary",
+      "label": "Slider accessibility label (second)",
+      "default": "Compare second before and after images"
+    },
+    {
+      "type": "header",
+      "content": "HANA — Why choose (below videos)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hana_why",
+      "label": "Show HANA why choose block",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hana_heading_lead",
+      "label": "HANA heading (before highlight)",
+      "default": "Why everyone chooses "
+    },
+    {
+      "type": "text",
+      "id": "hana_heading_highlight",
+      "label": "HANA heading (highlight)",
+      "default": "HANA™ Collagen Mask"
+    },
+    {
+      "type": "textarea",
+      "id": "hana_intro",
+      "label": "HANA intro paragraph",
+      "default": "Wake up with skin that feels firmer, brighter, and deeply hydrated. HANA’s overnight formula helps support elasticity, smooth the look of fine lines, and lock in moisture throughout the night."
+    },
+    {
+      "type": "image_picker",
+      "id": "hana_banner_image",
+      "label": "HANA banner image"
+    },
+    {
+      "type": "text",
+      "id": "hana_banner_image_alt",
+      "label": "HANA banner alt text",
+      "default": "HANA collagen night mask hydration banner"
+    },
+    {
+      "type": "header",
+      "content": "Why It Works (below HANA block)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_how_it_works",
+      "label": "Show Why It Works section",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "hiw_heading",
+      "label": "Why It Works heading",
+      "default": "Why It Works"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hana_benefit",
+      "name": "HANA benefit",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Benefit title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "Benefit description."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Before after slider" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,110 @@
+{% comment %}
+  Single comparison slider unit for dm-before-after-slider section.
+  Expects: aspect_ratio, before_media, after_media, dm_before_asset, dm_after_asset,
+  before_label, after_label, slider_label, slider_extra_class (optional)
+{% endcomment %}
+<comparison-slider-component
+  class="dm-before-after__slider {{ slider_extra_class }}"
+  style="--ratio: {{ aspect_ratio }};"
+>
+  <div class="dm-before-after__container">
+    <div
+      class="dm-before-after__media"
+      ref="mediaWrapper"
+      data-comparison-slider
+      data-orientation="horizontal"
+    >
+      <div class="dm-before-after__layer dm-before-after__layer--before">
+        {% if before_media != blank %}
+          {{
+            before_media
+            | image_url: width: 2400
+            | image_tag:
+              loading: 'lazy',
+              class: 'dm-before-after__image',
+              alt: before_label,
+              sizes: '100vw',
+              width: before_media.width,
+              height: before_media.height,
+              ref: 'beforeImage'
+          }}
+        {% elsif dm_before_asset != blank %}
+          <img
+            src="{{ dm_before_asset | asset_url }}"
+            class="dm-before-after__image"
+            alt="{{ before_label | escape }}"
+            loading="lazy"
+            decoding="async"
+            width="1200"
+            height="1200"
+            ref="beforeImage"
+          >
+        {% else %}
+          <div class="dm-before-after__placeholder" ref="beforeImage">
+            {{ 'product-apparel-1' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        <span
+          class="dm-before-after__label dm-before-after__label--before"
+          style="top: auto; bottom: 0px;padding-bottom:0px"
+        >
+          {{ before_label }}
+        </span>
+      </div>
+
+      <div class="dm-before-after__layer dm-before-after__layer--after">
+        {% if after_media != blank %}
+          {{
+            after_media
+            | image_url: width: 2400
+            | image_tag:
+              loading: 'lazy',
+              class: 'dm-before-after__image',
+              alt: after_label,
+              sizes: '100vw',
+              width: after_media.width,
+              height: after_media.height,
+              ref: 'afterImage'
+          }}
+        {% elsif dm_after_asset != blank %}
+          <img
+            src="{{ dm_after_asset | asset_url }}"
+            class="dm-before-after__image"
+            alt="{{ after_label | escape }}"
+            loading="lazy"
+            decoding="async"
+            width="1200"
+            height="1200"
+            ref="afterImage"
+          >
+        {% else %}
+          <div class="dm-before-after__placeholder" ref="afterImage">
+            {{ 'product-apparel-2' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+        <span
+          class="dm-before-after__label dm-before-after__label--after"
+          style="top: auto; bottom: 0px;;padding-bottom:0px"
+        >
+          {{ after_label }}
+        </span>
+      </div>
+
+      <div class="dm-before-after__handle" aria-hidden="true">
+        <span></span>
+      </div>
+
+      <input
+        type="range"
+        class="dm-before-after__range"
+        ref="slider"
+        min="0"
+        max="100"
+        value="50"
+        aria-label="{{ slider_label | escape }}"
+        on:input="/sync"
+        on:pointerdown="/sync"
+      >
+    </div>
+  </div>
+</comparison-slider-component>

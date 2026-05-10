@@ -1,0 +1,63 @@
+{% comment %}
+  ReviewCard — masonry tile with optional image.
+  @param customer_name @param customer_initial @param country_emoji @param rating @param review_body @param review_date
+  @param image_asset {string} theme asset filename, optional
+  @param block {block} optional theme editor attributes
+{% endcomment %}
+{% liquid
+  assign img_trim = image_asset | strip
+  assign img_lower = img_trim | downcase
+  assign has_img = false
+  if img_trim != blank and img_lower != 'none'
+    assign has_img = true
+  endif
+%}
+<article
+  class="dm-review-card{% if has_img %} dm-review-card--has-media{% endif %}"
+  {% if block %}
+    {{ block.shopify_attributes }}
+  {% endif %}
+>
+  {% if has_img %}
+    <div class="dm-review-card__media">
+      <img
+        class="dm-review-card__photo"
+        src="{{ img_trim | asset_url }}"
+        alt="{{ customer_name | escape }}"
+        width="600"
+        height="480"
+        loading="lazy"
+        decoding="async">
+      <div class="dm-review-card__stars-float">
+        {% render 'dm-review-star-rating', rating: rating, size: 'sm', discrete: true %}
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="dm-review-card__body">
+    {% unless has_img %}
+      <div class="dm-review-card__stars-inline">
+        {% render 'dm-review-star-rating', rating: rating, size: 'sm', discrete: true %}
+      </div>
+    {% endunless %}
+
+    <div class="dm-review-card__author">
+      <span class="dm-review-card__avatar" aria-hidden="true">{{ customer_initial | escape }}</span>
+      <div class="dm-review-card__author-text">
+        <span class="dm-review-card__name-row">
+          <span class="dm-review-card__name">{{ customer_name | escape }}</span>
+          <span class="dm-review-card__verified" aria-label="Verified buyer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="11" fill="#cf91ad"/>
+              <path d="M8 12.5l2.5 2.5L16 9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span class="dm-review-card__flag">{{ country_emoji }}</span>
+        </span>
+      </div>
+    </div>
+
+    <p class="dm-review-card__text">{{ review_body | escape }}</p>
+    <time class="dm-review-card__date" datetime="{{ review_date | escape }}">{{ review_date | escape }}</time>
+  </div>
+</article>

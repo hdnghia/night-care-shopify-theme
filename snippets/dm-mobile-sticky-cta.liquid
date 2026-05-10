@@ -1,0 +1,9 @@
+{% if request.page_type == 'product' and product != blank %}
+  <div class="dm-mobile-sticky-cta" aria-label="Quick purchase bar">
+    <div class="dm-mobile-sticky-cta__meta">
+      <span>{{ product.title }}</span>
+      <strong>{{ product.selected_or_first_available_variant.price | money }}</strong>
+    </div>
+    <a class="dm-mobile-sticky-cta__button" href="#product-hero-section">Choose offer</a>
+  </div>
+{% endif %}

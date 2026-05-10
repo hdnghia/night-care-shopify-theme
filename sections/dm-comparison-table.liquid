@@ -1,0 +1,66 @@
+<section
+  class="dm-conversion-comparison"
+  style="background: {{ section.settings.background }}; color: {{ section.settings.text_color }};"
+>
+  <div class="dm-conversion-comparison__inner">
+    <div class="dm-conversion-heading">
+      <p class="dm-conversion-kicker">{{ section.settings.kicker }}</p>
+      <h2>{{ section.settings.title }}</h2>
+      <p>{{ section.settings.subtitle }}</p>
+    </div>
+
+    <div class="dm-comparison-table" role="table" aria-label="{{ section.settings.title | escape }}">
+      <div class="dm-comparison-table__row dm-comparison-table__row--head" role="row">
+        <div role="columnheader">{{ section.settings.feature_label }}</div>
+        <div role="columnheader">{{ section.settings.product_label }}</div>
+        <div role="columnheader">{{ section.settings.other_label }}</div>
+      </div>
+
+      {% for block in section.blocks %}
+        <div class="dm-comparison-table__row" role="row" {{ block.shopify_attributes }}>
+          <div role="cell">{{ block.settings.feature }}</div>
+          <div role="cell" class="dm-comparison-table__check" aria-label="Included">✓</div>
+          <div role="cell" class="dm-comparison-table__muted">{{ block.settings.other_value }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Conversion comparison",
+  "tag": "section",
+  "class": "dm-section",
+  "settings": [
+    { "type": "color", "id": "background", "label": "Background", "default": "#FFF8F5" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1F1715" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Why it stands out" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Not Every Overnight Mask Works The Same" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "A quick comparison that helps shoppers understand the value before they choose their bundle." },
+    { "type": "text", "id": "feature_label", "label": "Feature column", "default": "Feature" },
+    { "type": "text", "id": "product_label", "label": "Product column", "default": "Night Care Mask" },
+    { "type": "text", "id": "other_label", "label": "Other column", "default": "Typical masks" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Comparison row",
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature", "default": "Works while you sleep" },
+        { "type": "text", "id": "other_value", "label": "Other value", "default": "Varies" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Conversion comparison",
+      "blocks": [
+        { "type": "row", "settings": { "feature": "Comfortable overnight wrap layer", "other_value": "Often rinses off quickly" } },
+        { "type": "row", "settings": { "feature": "Hydrating, non-greasy finish", "other_value": "Can feel heavy" } },
+        { "type": "row", "settings": { "feature": "Simple final skincare step", "other_value": "Extra steps required" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

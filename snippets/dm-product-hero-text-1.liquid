@@ -25,5 +25,5 @@
   {{ block.shopify_attributes }}
   class="relative transition-all duration-150 ease-in-out "
   style="margin-top: var(--{{ block.id }}--blockMarginTop_responsive_range); margin-bottom: var(--{{ block.id }}--blockMarginBottom_responsive_range);">
-  <p class="text-muted-foreground {{ textTextStyle_font_mobile }} sm:{{ textTextStyle_font_desktop }} dropmagic-text" style="text-align: var(--{{ block.id }}--textTextAlign_text_alignment); color: {{ textTextColor_color }};">{{ text_text }}</p>
+  <p class="text-muted-foreground {{ textTextStyle_font_mobile }} sm:{{ textTextStyle_font_desktop }} dropmagic-text" style="text-align: var(--{{ block.id }}--textTextAlign_text_alignment); color: {{ textTextColor_color }};">{{ text_text | newline_to_br }}</p>
 </div>

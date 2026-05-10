@@ -1,0 +1,41 @@
+{% comment %}
+  Compact review card for dm-proof-stats. @param block
+{% endcomment %}
+{% liquid
+  assign img_trim = block.settings.image_asset | strip
+  assign img_lower = img_trim | downcase
+  assign has_img = false
+  if img_trim != blank and img_lower != 'none'
+    assign has_img = true
+  endif
+%}
+<article class="dm-proof-rating-review{% if has_img %} dm-proof-rating-review--has-media{% endif %}" {{ block.shopify_attributes }}>
+  {% if has_img %}
+    <div class="dm-proof-rating-review__media">
+      <img
+        class="dm-proof-rating-review__photo"
+        src="{{ img_trim | asset_url }}"
+        alt="{{ block.settings.customer_name | escape }}"
+        width="400"
+        height="300"
+        loading="lazy"
+        decoding="async">
+    </div>
+  {% endif %}
+  <div class="dm-proof-rating-review__body">
+    <div class="dm-proof-rating-review__stars">
+      {% render 'dm-review-star-rating', rating: block.settings.rating, size: 'sm', discrete: true %}
+    </div>
+    <blockquote class="dm-proof-rating-review__quote">
+      <p>{{ block.settings.review_text | escape }}</p>
+    </blockquote>
+    <footer class="dm-proof-rating-review__footer">
+      <span class="dm-proof-rating-review__avatar" aria-hidden="true">{{ block.settings.customer_initial | escape }}</span>
+      <div class="dm-proof-rating-review__meta">
+        <span class="dm-proof-rating-review__name">{{ block.settings.customer_name | escape }}</span>
+        <span class="dm-proof-rating-review__flag">{{ block.settings.country_emoji }}</span>
+        <span class="dm-proof-rating-review__date">{{ block.settings.review_date | escape }}</span>
+      </div>
+    </footer>
+  </div>
+</article>

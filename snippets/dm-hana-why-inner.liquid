@@ -1,0 +1,187 @@
+{% comment %}
+  Shared HANA "why choose" markup + styles.
+  @param section_id {string} - unique suffix for heading id
+  @param heading_lead {string}
+  @param heading_highlight {string}
+  @param intro {string}
+  @param banner_image {image}
+  @param banner_alt {string}
+  @param blocks {array} - section.blocks (benefit or hana_benefit)
+  @param full_bleed_banner {boolean} - edge-to-edge banner row
+{% endcomment %}
+
+<style>
+  .dm-hana-why {
+    width: 100%;
+  }
+
+  .dm-hana-why__container {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: max(1rem, env(safe-area-inset-left, 0px)) max(1rem, env(safe-area-inset-right, 0px));
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  @media screen and (min-width: 768px) {
+    .dm-hana-why__container {
+      padding-inline: max(3.5rem, env(safe-area-inset-left, 0px)) max(3.5rem, env(safe-area-inset-right, 0px));
+    }
+  }
+
+  .dm-hana-why__heading {
+    margin: 0 0 1rem;
+    text-align: center;
+    font-size: clamp(1.35rem, 3.5vw, 2rem);
+    line-height: 1.25;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: baseline;
+    gap: 0.25em;
+  }
+
+  .dm-hana-why__heading-line,
+  .dm-hana-why__heading-highlight {
+    display: inline;
+  }
+
+  .dm-hana-why__intro {
+    margin: 0 auto 2rem;
+    max-width: 42rem;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .dm-hana-why__media {
+    margin: 0 auto 2rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    padding-inline: max(0px, env(safe-area-inset-left, 0px)) max(0px, env(safe-area-inset-right, 0px));
+  }
+
+  /* Kept for backwards compatibility; banner uses centered 80% width below */
+  .dm-hana-why__media--fullbleed {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    padding-inline: max(0px, env(safe-area-inset-left, 0px)) max(0px, env(safe-area-inset-right, 0px));
+  }
+
+  .dm-hana-why__img {
+    display: block;
+    width: 80%;
+    max-width: 80%;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .dm-hana-why__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1.25rem, 3vw, 2rem);
+    width: 100%;
+  }
+
+  @media screen and (min-width: 990px) {
+    .dm-hana-why__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .dm-hana-why__benefit-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: 0.75rem;
+    row-gap: 0.35rem;
+    align-items: start;
+  }
+
+  .dm-hana-why__check {
+    grid-column: 1;
+    grid-row: 1;
+    line-height: 0;
+  }
+
+  .dm-hana-why__check svg {
+    display: block;
+  }
+
+  .dm-hana-why__benefit-title {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.35;
+  }
+
+  .dm-hana-why__benefit-desc {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  .dm-hana-why__benefit-desc p {
+    margin: 0;
+  }
+
+  .dm-hana-why__container--after-banner {
+    padding-top: 0;
+  }
+</style>
+
+<div class="dm-hana-why">
+  <div class="dm-hana-why__container">
+    <h2 class="dm-hana-why__heading" id="dm-hana-why-heading-{{ section_id }}">
+      <span class="dm-hana-why__heading-line">{{ heading_lead | escape }}</span>
+      <span class="dm-hana-why__heading-highlight">{{ heading_highlight | escape }}</span>
+    </h2>
+
+    <div class="dm-hana-why__intro">
+      {{ intro | newline_to_br }}
+    </div>
+  </div>
+
+  <div class="dm-hana-why__media{% if full_bleed_banner %} dm-hana-why__media--fullbleed{% endif %}">
+    {% if banner_image != blank %}
+      {{
+        banner_image
+        | image_url: width: 2400
+        | image_tag:
+          class: 'dm-hana-why__img',
+          widths: '400, 800, 1200, 1600, 2000, 2400',
+          sizes: '(min-width: 990px) min(57.6rem, 80vw), 80vw',
+          alt: banner_alt,
+          loading: 'lazy'
+      }}
+    {% else %}
+      <img
+        class="dm-hana-why__img"
+        src="{{ 'hana-hydration-banner.png' | asset_url }}"
+        alt="{{ banner_alt | escape }}"
+        width="1200"
+        loading="lazy"
+        decoding="async">
+    {% endif %}
+  </div>
+
+  <div class="dm-hana-why__container dm-hana-why__container--after-banner">
+    <div class="dm-hana-why__grid">
+      {% for block in blocks %}
+        {% if block.type == 'benefit' or block.type == 'hana_benefit' %}
+          {% render 'dm-hana-benefit-item',
+            block: block,
+            title: block.settings.title,
+            description: block.settings.description %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

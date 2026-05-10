@@ -1,0 +1,173 @@
+{% comment %}
+  Care highlights — product messaging (e.g. above before/after slider).
+  Pass placement: 'above-slider' when sitting atop dm-before-after-slider.
+{% endcomment %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+  .dm-ph-care-highlights {
+    --dm-care-accent: #9e3a66;
+    --dm-care-accent-soft: color-mix(in srgb, #9e3a66 12%, #fff 88%);
+    font-family: 'Poppins', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    margin-top: 1.125rem;
+    margin-bottom: 0;
+    padding: 1.85rem 1.25rem 1.95rem;
+    border: none;
+    border-radius: 0;
+    background: #fff;
+    background-image: none;
+    color: #3a3331;
+    box-shadow: none;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  .dm-ph-care-highlights__inner {
+    position: relative;
+    z-index: 1;
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .dm-ph-care-highlights--above-slider .dm-ph-care-highlights__inner {
+    text-align: center;
+  }
+
+  .dm-ph-care-highlights__head {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .dm-ph-care-highlights--above-slider .dm-ph-care-highlights__head {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .dm-ph-care-highlights__mark {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: grid;
+    place-items: center;
+    font-size: 1.125rem;
+    line-height: 1;
+    border-radius: 12px;
+    background: var(--dm-care-accent-soft);
+    border: none;
+    box-shadow: none;
+  }
+
+  .dm-ph-care-highlights__title {
+    margin: 0;
+    font-size: clamp(1.05rem, 2.5vw, 1.22rem);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: #231f1e;
+  }
+
+  .dm-ph-care-highlights__lede {
+    margin: 0 0 1rem;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    font-weight: 400;
+    color: #5c534f;
+  }
+
+  @media screen and (min-width: 768px) {
+    .dm-ph-care-highlights:not(.dm-ph-care-highlights--above-slider) {
+      padding: 2rem 1.5rem 2.1rem;
+    }
+
+    .dm-before-after > .dm-ph-care-highlights--above-slider {
+      padding-left: max(56px, env(safe-area-inset-left, 0px));
+      padding-right: max(56px, env(safe-area-inset-right, 0px));
+    }
+
+    .dm-ph-care-highlights__lede {
+      font-size: 0.9375rem;
+    }
+  }
+
+  .dm-ph-care-highlights__pills {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.5rem;
+  }
+
+  .dm-ph-care-highlights--above-slider .dm-ph-care-highlights__pills {
+    justify-content: center;
+  }
+
+  .dm-ph-care-highlights__pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #4a3f3d;
+    background: color-mix(in srgb, #fff6f9 88%, #fff 12%);
+    border: none;
+    border-radius: 999px;
+    line-height: 1.2;
+    box-shadow: none;
+  }
+
+  @media screen and (min-width: 768px) {
+    .dm-ph-care-highlights__pill {
+      font-size: 0.8125rem;
+      padding: 0.5rem 0.95rem;
+    }
+  }
+
+  /* Full width of section.dm-before-after (snippet rendered as direct child, not inside __inner) */
+  .dm-before-after > .dm-ph-care-highlights--above-slider {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: clamp(1.75rem, 4.5vw, 2.35rem);
+    padding-bottom: clamp(1.45rem, 3.5vw, 2.1rem);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+</style>
+
+<section
+  class="dm-ph-care-highlights w-full{% if placement == 'above-slider' %} dm-ph-care-highlights--above-slider{% endif %}"
+  aria-label="Product care highlights">
+  <div class="dm-ph-care-highlights__inner">
+    <div class="dm-ph-care-highlights__head">
+      <span class="dm-ph-care-highlights__mark" aria-hidden="true">✅</span>
+      <h3 class="dm-ph-care-highlights__title">Gentle Overnight Care</h3>
+    </div>
+    <p class="dm-ph-care-highlights__lede">
+      Designed to support smoother, hydrated, and glowing-looking skin while you sleep <span aria-hidden="true">🌙</span>
+    </p>
+    <ul class="dm-ph-care-highlights__pills" role="list">
+      <li>
+        <span class="dm-ph-care-highlights__pill"><span aria-hidden="true">💧</span> Deep Hydration</span>
+      </li>
+      <li>
+        <span class="dm-ph-care-highlights__pill"><span aria-hidden="true">✨</span> Radiant Glow</span>
+      </li>
+      <li>
+        <span class="dm-ph-care-highlights__pill"><span aria-hidden="true">🏅</span> Original Certified</span>
+      </li>
+    </ul>
+  </div>
+</section>

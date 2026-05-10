@@ -1,0 +1,101 @@
+{% comment %}
+  Why It Works — three alternating image/text rows. Optional standalone section (Theme editor).
+{% endcomment %}
+
+<section class="dm-hana-hiw-section dm-section">
+  {% render 'dm-hana-how-it-works-inner',
+    section_id: section.id,
+    section_heading: section.settings.heading,
+    blocks: section.blocks %}
+</section>
+
+{% schema %}
+{
+  "name": "HANA why it works",
+  "tag": "section",
+  "class": "dm-section",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section heading",
+      "default": "Why It Works"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature row",
+      "limit": 3,
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Leave empty to use the default theme asset for this row position."
+        },
+        {
+          "type": "text",
+          "id": "image_alt",
+          "label": "Image alt text",
+          "default": "Describe this image for accessibility",
+          "info": "Leave as placeholder to use the default alt for this row when image is empty."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "COLLAGEN"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Overnight Collagen Renewal"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description",
+          "default": "While you sleep, HANA helps support your skin's natural overnight care routine. By morning, your skin feels smoother, firmer, and refreshed with a soft, hydrated-looking texture."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "HANA why it works",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": {
+            "image_alt": "Close-up of skincare texture on skin",
+            "label": "COLLAGEN",
+            "title": "Overnight Collagen Renewal",
+            "description": "While you sleep, HANA helps support your skin's natural overnight care routine. By morning, your skin feels smoother, firmer, and refreshed with a soft, hydrated-looking texture."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "image_alt": "Woman sleeping during overnight skincare care",
+            "label": "HYDRATION",
+            "title": "Deep Overnight Hydration",
+            "description": "Through the night, the formula helps replenish moisture and soften the look of dryness so your complexion wakes up feeling supple, balanced, and comfortably hydrated."
+          }
+        },
+        {
+          "type": "feature",
+          "settings": {
+            "image_alt": "Woman with smooth glowing-looking skin",
+            "label": "RADIANCE",
+            "title": "Morning Glow & Radiance",
+            "description": "Carefully chosen ingredients help revive the look of dull, tired skin while supporting a more even tone and a healthy-looking luminosity you can feel confident about."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

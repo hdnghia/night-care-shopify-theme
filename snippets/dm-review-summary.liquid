@@ -1,0 +1,74 @@
+{% comment %}
+  ReviewSummary — top summary grid (avg / breakdown / thumbnails + CTA).
+  @param section {section}
+{% endcomment %}
+{% liquid
+  assign tb = section.settings.star_count_5 | plus: section.settings.star_count_4 | plus: section.settings.star_count_3 | plus: section.settings.star_count_2 | plus: section.settings.star_count_1
+  if tb < 1
+    assign tb = 1
+  endif
+
+  assign thumbs_raw = section.settings.thumbnail_assets | strip | newline_to_br | split: '<br />' | join: ','
+  if thumbs_raw == blank
+    assign thumbs_raw = 'hana-review-01-valentina-r.webp,hana-review-02-valentina-r.png,hana-review-03-antonia-guerrero.png,hana-review-04-constanza-a.png,hana-review-05-constanza-a.png,hana-review-06-macarena-f.png,hana-review-07-macarena-f.png,hana-review-08-javiera-c.png'
+  endif
+  assign thumbs_list = thumbs_raw | replace: ', ', ',' | split: ','
+%}
+<div class="dm-review-summary">
+  <div class="dm-review-summary__block dm-review-summary__avg">
+    <div class="dm-review-summary__score">{{ section.settings.average_rating | escape }}</div>
+    {% render 'dm-review-star-rating', rating: section.settings.average_rating, size: 'lg' %}
+    <p class="dm-review-summary__total">{{ section.settings.total_reviews_label | escape }}</p>
+  </div>
+
+  <div class="dm-review-summary__block dm-review-summary__breakdown-wrap">
+    {% render 'dm-rating-breakdown',
+      total: tb,
+      c5: section.settings.star_count_5,
+      c4: section.settings.star_count_4,
+      c3: section.settings.star_count_3,
+      c2: section.settings.star_count_2,
+      c1: section.settings.star_count_1 %}
+  </div>
+
+  <div class="dm-review-summary__block dm-review-summary__photos-cta">
+    <div class="dm-review-summary__thumb-grid" aria-hidden="true">
+      {% for fname in thumbs_list %}
+        {% assign asset_name = fname | strip %}
+        {% if asset_name != blank %}
+          <div class="dm-review-summary__thumb">
+            <img
+              src="{{ asset_name | asset_url }}"
+              alt=""
+              width="96"
+              height="96"
+              loading="lazy"
+              decoding="async">
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% liquid
+      assign review_link = section.settings.write_review_link | strip
+      if review_link == blank or review_link == '#' or review_link == '#/'
+        assign review_link_external = false
+      else
+        assign review_link_external = true
+      endif
+    %}
+    {% if review_link_external %}
+      <a class="dm-review-summary__write-btn" href="{{ section.settings.write_review_link }}">
+        {{- section.settings.write_review_label | escape -}}
+      </a>
+    {% else %}
+      <button
+        type="button"
+        class="dm-review-summary__write-btn js-dm-review-open"
+        aria-expanded="false"
+        aria-controls="dm-review-form-panel-{{ section.id }}"
+      >
+        {{- section.settings.write_review_label | escape -}}
+      </button>
+    {% endif %}
+  </div>
+</div>

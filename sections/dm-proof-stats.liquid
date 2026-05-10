@@ -1,0 +1,604 @@
+{% liquid
+  assign stats_count = 0
+  assign reviews_count = 0
+  for block in section.blocks
+    if block.type == 'stat'
+      assign stats_count = stats_count | plus: 1
+    endif
+    if block.type == 'rating_review'
+      assign reviews_count = reviews_count | plus: 1
+    endif
+  endfor
+  assign reviews_initial = section.settings.reviews_initial_visible | default: 12
+%}
+<section
+  class="dm-proof-stats"
+  style="background: {{ section.settings.background }}; color: {{ section.settings.text_color }};"
+>
+  <div class="dm-proof-stats__inner">
+    <div class="dm-conversion-heading">
+      <p class="dm-conversion-kicker">{{ section.settings.kicker }}</p>
+      <h2>{{ section.settings.title }}</h2>
+      <p>{{ section.settings.subtitle }}</p>
+    </div>
+
+    {% if stats_count > 0 %}
+      <div class="dm-proof-stats__grid">
+        {% for block in section.blocks %}
+          {% if block.type == 'stat' %}
+            <article class="dm-proof-stat" {{ block.shopify_attributes }}>
+              <strong>{{ block.settings.value }}</strong>
+              <span>{{ block.settings.label }}</span>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if section.settings.reviews_heading != blank and reviews_count > 0 %}
+      <h3 class="dm-proof-stats__reviews-heading">{{ section.settings.reviews_heading | escape }}</h3>
+    {% endif %}
+
+    {% if reviews_count > 0 %}
+      <div
+        id="dm-proof-stats-reviews-{{ section.id }}"
+        class="dm-proof-stats__reviews{% if reviews_count > reviews_initial %} dm-proof-stats__reviews--collapsible{% endif %}"
+        data-initial-visible="{{ reviews_initial }}"
+      >
+        {% assign review_slot_index = 0 %}
+        {% for block in section.blocks %}
+          {% if block.type == 'rating_review' %}
+            {% assign review_slot_index = review_slot_index | plus: 1 %}
+            <div
+              class="dm-proof-stats__review-slot{% if review_slot_index > reviews_initial %} dm-proof-stats__review-slot--extra{% endif %}"
+            >
+              {% render 'dm-proof-rating-review', block: block %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if reviews_count > reviews_initial %}
+        <div class="dm-proof-stats__read-more-row">
+          <button
+            type="button"
+            class="dm-proof-stats__read-more"
+            data-dm-proof-read-more="{{ section.id }}"
+            aria-expanded="false"
+            aria-controls="dm-proof-stats-reviews-{{ section.id }}"
+          >
+            {{- section.settings.read_more_label | escape -}}
+          </button>
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if section.settings.caption != blank %}
+      <p class="dm-proof-stats__caption">{{ section.settings.caption }}</p>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .dm-proof-stats__reviews-heading {
+    margin: clamp(2rem, 4vw, 2.75rem) 0 1rem;
+    text-align: center;
+    font-family: ui-serif, Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: #1f1715;
+  }
+
+  .dm-proof-stats__reviews {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(0.85rem, 2vw, 1.15rem);
+    margin-top: 0.5rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dm-proof-stats__reviews {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .dm-proof-stats__reviews {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .dm-proof-stats__review-slot {
+    min-width: 0;
+  }
+
+  .dm-proof-stats__reviews--collapsible:not(.is-expanded) .dm-proof-stats__review-slot--extra {
+    display: none !important;
+  }
+
+  .dm-proof-stats__read-more-row {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .dm-proof-stats__read-more {
+    min-width: 10rem;
+    padding: 0.65rem 1.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(158, 58, 102, 0.35);
+    background: #fff;
+    color: #9e3a66;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dm-proof-stats__read-more:hover {
+    background: rgba(207, 145, 173, 0.12);
+    border-color: rgba(158, 58, 102, 0.55);
+    color: #7d2e52;
+  }
+
+  .dm-proof-rating-review {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ecd8d2;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 10px 28px rgba(140, 55, 91, 0.06);
+    overflow: hidden;
+    text-align: left;
+    min-height: 100%;
+    box-sizing: border-box;
+  }
+
+  .dm-proof-rating-review__media {
+    aspect-ratio: 4 / 3;
+    background: #faf5f7;
+    overflow: hidden;
+  }
+
+  .dm-proof-rating-review__photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dm-proof-rating-review__body {
+    padding: clamp(1rem, 2.2vw, 1.25rem);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 0.65rem;
+  }
+
+  .dm-proof-rating-review__stars {
+    line-height: 1;
+  }
+
+  .dm-proof-rating-review__quote {
+    margin: 0;
+    flex: 1;
+  }
+
+  .dm-proof-rating-review__quote p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #332522;
+  }
+
+  .dm-proof-rating-review__footer {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid rgba(236, 216, 210, 0.85);
+    margin-top: auto;
+  }
+
+  .dm-proof-rating-review__avatar {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: linear-gradient(145deg, #f5dfe8, #cf91ad);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dm-proof-rating-review__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.35rem 0.5rem;
+    font-size: 0.8125rem;
+    color: #5e5450;
+  }
+
+  .dm-proof-rating-review__name {
+    font-weight: 700;
+    color: #1f1715;
+  }
+
+  .dm-proof-rating-review__date {
+    width: 100%;
+    flex-basis: 100%;
+    font-size: 0.75rem;
+    color: #93898e;
+  }
+</style>
+
+<script>
+  (function () {
+    var sid = {{ section.id | json }};
+    var labels = {
+      more: {{ section.settings.read_more_label | default: 'Read more' | json }},
+      less: {{ section.settings.read_less_label | default: 'Show less' | json }}
+    };
+
+    function bind(btn) {
+      var grid = document.getElementById('dm-proof-stats-reviews-' + sid);
+      if (!btn || !grid || btn.getAttribute('data-dm-proof-bound')) return;
+      btn.setAttribute('data-dm-proof-bound', 'true');
+
+      btn.addEventListener('click', function () {
+        var expanded = grid.classList.toggle('is-expanded');
+        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        btn.textContent = expanded ? labels.less : labels.more;
+        if (expanded) {
+          grid.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+    }
+
+    function boot() {
+      bind(document.querySelector('[data-dm-proof-read-more="' + sid + '"]'));
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+
+    document.addEventListener('shopify:section:load', function (ev) {
+      if (!ev.target || !ev.target.querySelector) return;
+      if (ev.target.querySelector('[data-dm-proof-read-more="' + sid + '"]')) boot();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Proof stats",
+  "tag": "section",
+  "class": "dm-section",
+  "max_blocks": 50,
+  "settings": [
+    { "type": "color", "id": "background", "label": "Background", "default": "#F7ECE7" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#1F1715" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Visible-feeling results" },
+    { "type": "text", "id": "title", "label": "Title", "default": "Morning Results Customers Notice" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Use concise, believable claims that match your product proof and customer feedback." },
+    {
+      "type": "text",
+      "id": "reviews_heading",
+      "label": "Reviews section heading",
+      "default": "Recent shopper ratings",
+      "info": "Shown above the review cards when you add Rating review blocks."
+    },
+    {
+      "type": "range",
+      "id": "reviews_initial_visible",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "label": "Reviews shown before Read more",
+      "default": 12,
+      "info": "Extra rating blocks stay in the page and appear after shoppers tap Read more."
+    },
+    {
+      "type": "text",
+      "id": "read_more_label",
+      "label": "Read more button",
+      "default": "Read more"
+    },
+    {
+      "type": "text",
+      "id": "read_less_label",
+      "label": "Show less button",
+      "default": "Show less"
+    },
+    { "type": "textarea", "id": "caption", "label": "Caption", "default": "Individual results vary. Use product claims that are accurate for your store and market." }
+  ],
+  "blocks": [
+    {
+      "type": "stat",
+      "name": "Stat",
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "24H" },
+        { "type": "text", "id": "label", "label": "Label", "default": "Hydrated-feeling skin" }
+      ]
+    },
+    {
+      "type": "rating_review",
+      "name": "Rating review",
+      "settings": [
+        { "type": "text", "id": "customer_name", "label": "Name", "default": "Customer" },
+        { "type": "text", "id": "customer_initial", "label": "Initial", "default": "C" },
+        { "type": "text", "id": "country_emoji", "label": "Country flag", "default": "🇨🇱" },
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "label": "Stars", "default": 5 },
+        { "type": "textarea", "id": "review_text", "label": "Review", "default": "Great product." },
+        { "type": "text", "id": "review_date", "label": "Date", "default": "01/01/2026" },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Photo asset filename",
+          "default": "none",
+          "info": "Theme asset (Assets folder). Use none for text-only."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Proof stats",
+      "blocks": [
+        { "type": "stat", "settings": { "value": "24H", "label": "Hydrated-feeling skin" } },
+        { "type": "stat", "settings": { "value": "2,400+", "label": "Verified customer experiences" } },
+        { "type": "stat", "settings": { "value": "4.8/5", "label": "Average customer rating" } },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Valentina R.",
+            "customer_initial": "V",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "It arrived in 2 days and I used it the same night. The next morning my skin felt softer and more hydrated than expected.",
+            "review_date": "02/18/2026",
+            "image_asset": "hana-review-01-valentina-r.webp"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Antonia G.",
+            "customer_initial": "A",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I will keep buying it. The product leaves my skin feeling smooth, clean, and fresh.",
+            "review_date": "02/10/2026",
+            "image_asset": "hana-review-03-antonia-guerrero.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Constanza A.",
+            "customer_initial": "C",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I had doubts at first, but I am happy I bought it. My skin feels softer and more comfortable.",
+            "review_date": "01/30/2026",
+            "image_asset": "hana-review-04-constanza-a.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Macarena F.",
+            "customer_initial": "M",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I have very reactive skin and nothing happened. That already says a lot for me.",
+            "review_date": "12/30/2025",
+            "image_asset": "hana-review-07-macarena-f.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Isidora P.",
+            "customer_initial": "I",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I usually do not write reviews, but this one deserves it. I can really notice the difference.",
+            "review_date": "12/21/2025",
+            "image_asset": "hana-review-09-isidora-p.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Javiera C.",
+            "customer_initial": "J",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I bought the 2-for-1 offer and kept using it because of the results. My skin feels fresh every morning.",
+            "review_date": "12/21/2025",
+            "image_asset": "hana-review-08-javiera-c.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Camila S.",
+            "customer_initial": "C",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "It arrived well packaged and earlier than expected. The mask feels nice and my skin looks more refreshed.",
+            "review_date": "10/02/2025",
+            "image_asset": "hana-review-16-camila-s.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Francisca L.",
+            "customer_initial": "F",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I ordered it on Thursday and received it on Saturday. After the first night, my skin felt much softer.",
+            "review_date": "08/18/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Rocío A.",
+            "customer_initial": "R",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I ordered it on Friday and received it on Monday. After using it, my skin felt different and much softer.",
+            "review_date": "09/24/2025",
+            "image_asset": "hana-review-15-rocio-a.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Daniela M.",
+            "customer_initial": "D",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I do not usually write reviews, but this product works for my routine and arrived fast.",
+            "review_date": "09/11/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Paula G.",
+            "customer_initial": "P",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "My mom liked it so much that I had to order another one. We both love it.",
+            "review_date": "07/29/2025",
+            "image_asset": "hana-review-20-paula-g.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Catalina M.",
+            "customer_initial": "C",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "At first I was unsure about sleeping with something on my face, but now I do not want to skip it.",
+            "review_date": "05/26/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Pamela V.",
+            "customer_initial": "P",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "It arrived quickly and in good condition. The product does what I expected, and I already ordered another one for my mom.",
+            "review_date": "07/26/2025",
+            "image_asset": "hana-review-11-macarena-f.webp"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Antonia R.",
+            "customer_initial": "A",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I use it every night now. It became part of my routine, and I would not change it for anything.",
+            "review_date": "07/17/2025",
+            "image_asset": "hana-review-12-macarena-f.webp"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Rocío V.",
+            "customer_initial": "R",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I already ordered my second batch. That says everything. My skin feels fresh and soft when I wake up.",
+            "review_date": "06/06/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Paula G.",
+            "customer_initial": "P",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "My mom took mine, so I had to order another one. We are both hooked on it.",
+            "review_date": "07/11/2025",
+            "image_asset": "hana-review-19-paula-g.webp"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Constanza A.",
+            "customer_initial": "C",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I had doubts because of my age, but I am glad I bought it. My skin looks better and feels more hydrated.",
+            "review_date": "07/20/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Camila S.",
+            "customer_initial": "C",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I am 51 and did not expect much, but I was wrong. My skin feels better than it has in years.",
+            "review_date": "08/16/2025",
+            "image_asset": "hana-review-17-camila-s.png"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Antonia R.",
+            "customer_initial": "A",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "It arrived very fast. I used it that night, and the first thing I did in the morning was touch my face. It felt so soft.",
+            "review_date": "07/16/2025",
+            "image_asset": "hana-review-13-macarena-f.webp"
+          }
+        },
+        {
+          "type": "rating_review",
+          "settings": {
+            "customer_name": "Francisca L.",
+            "customer_initial": "F",
+            "country_emoji": "🇨🇱",
+            "rating": 5,
+            "review_text": "I have been using it for 2 months and already ordered the second round. That speaks for itself.",
+            "review_date": "05/08/2025",
+            "image_asset": "hana-review-18-isidora-p.webp"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

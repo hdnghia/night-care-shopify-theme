@@ -1,0 +1,425 @@
+{% comment %}
+  DM Gallery carousel — full-width, centered container, responsive slides per view (1 / 2 / 3).
+  Carousel uses vanilla JS (currentSlideStart + render).
+{% endcomment %}
+{% liquid
+  assign dm_pgc_has_slide = false
+  for block in section.blocks
+    if block.type == 'slide'
+      assign dm_pgc_slide_src = ''
+      if block.settings.image != blank
+        assign dm_pgc_slide_src = block.settings.image | image_url: width: 2400
+      elsif block.settings.asset_file != blank
+        assign dm_af = block.settings.asset_file | strip
+        if dm_af != blank
+          assign dm_pgc_slide_src = dm_af | asset_url
+        endif
+      endif
+      if dm_pgc_slide_src != blank
+        assign dm_pgc_has_slide = true
+      endif
+    endif
+  endfor
+%}
+<section
+  class="dm-product-gallery-carousel dm-section"
+  id="dm-pgc-{{ section.id }}"
+  style="--dm-pgc-bg: {{ section.settings.background_color }};"
+  {% unless dm_pgc_has_slide %}
+    hidden
+  {% endunless %}
+>
+  <div class="dm-pgc__inner">
+    <div class="dm-pgc__stage">
+      <button
+        type="button"
+        class="dm-pgc__nav dm-pgc__nav--prev"
+        aria-label="{{ section.settings.prev_label | escape }}"
+        data-dm-pgc-prev="{{ section.id }}"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <div class="dm-pgc__viewport">
+        <div class="dm-pgc__slots" data-dm-pgc-slots="{{ section.id }}">
+          <div class="dm-pgc__slot" data-slot-index="0">
+            <img alt="" width="800" height="800" loading="lazy" decoding="async">
+          </div>
+          <div class="dm-pgc__slot" data-slot-index="1">
+            <img alt="" width="800" height="800" loading="lazy" decoding="async">
+          </div>
+          <div class="dm-pgc__slot" data-slot-index="2">
+            <img alt="" width="800" height="800" loading="lazy" decoding="async">
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="dm-pgc__nav dm-pgc__nav--next"
+        aria-label="{{ section.settings.next_label | escape }}"
+        data-dm-pgc-next="{{ section.id }}"
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M10 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <script type="application/json" class="dm-pgc__data">
+    {% assign dm_pgc_first = true %}
+    [
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'slide' -%}
+          {%- liquid
+            assign dm_u = ''
+            if block.settings.image != blank
+              assign dm_u = block.settings.image | image_url: width: 2400
+            elsif block.settings.asset_file != blank
+              assign dm_af2 = block.settings.asset_file | strip
+              if dm_af2 != blank
+                assign dm_u = dm_af2 | asset_url
+              endif
+            endif
+          -%}
+          {%- if dm_u != blank -%}
+            {%- unless dm_pgc_first -%},{%- endunless -%}
+            {"src":{{ dm_u | json }},"alt":{{ block.settings.alt | default: '' | json }}}
+            {%- assign dm_pgc_first = false -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+    ]
+  </script>
+</section>
+
+<style>
+  .dm-product-gallery-carousel {
+    width: 100%;
+    margin: 0;
+    padding: clamp(2rem, 5vw, 3.25rem) max(1rem, env(safe-area-inset-left, 0px))
+      clamp(2rem, 5vw, 3.25rem) max(1rem, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+    background: var(--dm-pgc-bg, #fdf8fa);
+  }
+
+  .dm-pgc__inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .dm-pgc__stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.35rem, 1.5vw, 0.75rem);
+  }
+
+  .dm-pgc__viewport {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dm-pgc__slots {
+    display: grid;
+    gap: clamp(0.65rem, 2vw, 1.1rem);
+    grid-template-columns: repeat(var(--dm-pgc-spv, 3), minmax(0, 1fr));
+    transition: gap 0.2s ease;
+  }
+
+  .dm-pgc__slot {
+    aspect-ratio: 1 / 1;
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgba(31, 23, 21, 0.04);
+    min-width: 0;
+  }
+
+  .dm-pgc__slot--off {
+    display: none;
+  }
+
+  .dm-pgc__slot img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.28s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dm-pgc__slot img {
+      transition: none;
+    }
+  }
+
+  .dm-pgc__nav {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid rgba(31, 23, 21, 0.12);
+    background: rgba(255, 255, 255, 0.92);
+    color: #3d3538;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(31, 23, 21, 0.06);
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    align-self: center;
+  }
+
+  .dm-pgc__nav:hover {
+    background: #fff;
+    border-color: rgba(158, 58, 102, 0.28);
+    color: #9e3a66;
+  }
+
+  .dm-pgc__nav:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(158, 58, 102, 0.22);
+  }
+
+  @media screen and (max-width: 749px) {
+    .dm-pgc__stage {
+      gap: 0.35rem;
+    }
+
+    .dm-pgc__nav {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    var rootId = 'dm-pgc-{{ section.id }}';
+    var sid = {{ section.id | json }};
+
+    function slidesPerView() {
+      var w = window.innerWidth;
+      if (w < 750) return 1;
+      if (w < 990) return 2;
+      return 3;
+    }
+
+    function parseSlides(root) {
+      var el = root.querySelector('.dm-pgc__data');
+      if (!el || !el.textContent) return [];
+      try {
+        var data = JSON.parse(el.textContent);
+        return Array.isArray(data) ? data : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function initDmGalleryCarousel(root) {
+      if (!root || root.getAttribute('data-dm-pgc-init')) return;
+      var slides = parseSlides(root);
+      if (!slides.length) return;
+      root.removeAttribute('hidden');
+      root.setAttribute('data-dm-pgc-init', 'true');
+
+      var currentSlideStart = 0;
+      var slotsRoot = root.querySelector('[data-dm-pgc-slots="' + sid + '"]');
+      var slots = slotsRoot ? slotsRoot.querySelectorAll('.dm-pgc__slot') : [];
+
+      function normalizeStart(spv, n) {
+        currentSlideStart = ((currentSlideStart % n) + n) % n;
+      }
+
+      function applySlideImage(img, entry, useFade) {
+        if (!entry || !entry.src) return;
+        var nextSrc = entry.src;
+        var nextAlt = entry.alt || '';
+        if (img.getAttribute('src') === nextSrc && img.getAttribute('alt') === nextAlt) return;
+
+        function swap() {
+          img.src = nextSrc;
+          img.alt = nextAlt;
+          if (img.complete) {
+            img.style.opacity = '1';
+          } else {
+            img.onload = function () {
+              img.style.opacity = '1';
+            };
+          }
+        }
+
+        if (useFade && window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          img.style.opacity = '0.65';
+          requestAnimationFrame(function () {
+            swap();
+          });
+        } else {
+          swap();
+        }
+      }
+
+      function render() {
+        var spv = slidesPerView();
+        var n = slides.length;
+        normalizeStart(spv, n);
+        root.style.setProperty('--dm-pgc-spv', String(spv));
+
+        for (var i = 0; i < slots.length; i++) {
+          var cell = slots[i];
+          if (i >= spv) {
+            cell.classList.add('dm-pgc__slot--off');
+            continue;
+          }
+          cell.classList.remove('dm-pgc__slot--off');
+          var idx = (currentSlideStart + i) % n;
+          var img = cell.querySelector('img');
+          if (img) applySlideImage(img, slides[idx], true);
+        }
+      }
+
+      function go(delta) {
+        var n = slides.length;
+        if (n < 1) return;
+        currentSlideStart = (currentSlideStart + delta + n) % n;
+        render();
+      }
+
+      root.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!(t && t.closest)) return;
+        if (t.closest('[data-dm-pgc-prev="' + sid + '"]')) {
+          e.preventDefault();
+          go(-1);
+        } else if (t.closest('[data-dm-pgc-next="' + sid + '"]')) {
+          e.preventDefault();
+          go(1);
+        }
+      });
+
+      var resizeTimer;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          render();
+        }, 120);
+      });
+
+      render();
+    }
+
+    function boot() {
+      var root = document.getElementById(rootId);
+      if (root) initDmGalleryCarousel(root);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+
+    document.addEventListener('shopify:section:load', function (ev) {
+      if (!ev.detail || String(ev.detail.sectionId) !== String(sid)) return;
+      var root = document.getElementById(rootId);
+      if (root) root.removeAttribute('data-dm-pgc-init');
+      boot();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "DM Gallery carousel",
+  "tag": "section",
+  "class": "dm-section",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fdf8fa"
+    },
+    {
+      "type": "text",
+      "id": "prev_label",
+      "label": "Previous button label",
+      "default": "Previous images"
+    },
+    {
+      "type": "text",
+      "id": "next_label",
+      "label": "Next button label",
+      "default": "Next images"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Optional. If empty, the theme asset filename below is used."
+        },
+        {
+          "type": "text",
+          "id": "asset_file",
+          "label": "Asset filename (fallback)",
+          "default": "hana-freepik_assistant_1774975623581.png",
+          "info": "File from the Assets folder (e.g. photo.png)."
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Image alt text",
+          "default": "HANA Collagen Night Wrapping Mask product image"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "DM Gallery carousel",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "asset_file": "hana-freepik_assistant_1774975623581.png",
+            "alt": "HANA Collagen Night Wrapping Mask product image"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "asset_file": "hana-freepik_assistant_1774975624483.png",
+            "alt": "HANA Collagen Night Wrapping Mask with hydration effect"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "asset_file": "hana-freepik_assistant_1774975626707.png",
+            "alt": "HANA Collagen Night Wrapping Mask skincare product close-up"
+          }
+        },
+        {
+          "type": "slide",
+          "settings": {
+            "asset_file": "hana-freepik_assistant_1774975760806_f73937bd-506e-49d6-a30e-596789aa2e4e.png",
+            "alt": "HANA Collagen Night Wrapping Mask beauty product"
+          }
+        },
+      ]
+    }
+  ]
+}
+{% endschema %}

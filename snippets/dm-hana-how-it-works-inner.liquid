@@ -1,0 +1,430 @@
+{% comment %}
+  Why It Works / How it works — alternating image–text rows.
+  Pass blocks: section.blocks (type "feature") for editable mode; omit blocks for built-in defaults (embed).
+{% endcomment %}
+
+<style>
+  .dm-hana-hiw {
+    --dm-hiw-base:rgb(186, 122, 154);
+    --dm-hiw-deep:rgb(184, 111, 149);
+    --dm-hiw-mid:rgb(188, 122, 153);
+    --dm-hiw-accent:rgb(192, 126, 154);
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    background-color: var(--dm-hiw-base);
+  }
+
+  .dm-hana-hiw::before {
+    content: '';
+    position: absolute;
+    inset: -35% -15%;
+    z-index: 0;
+    background: linear-gradient(
+      125deg,
+      var(--dm-hiw-deep) 0%,
+      var(--dm-hiw-base) 25%,
+      var(--dm-hiw-mid) 48%,
+      var(--dm-hiw-accent) 72%,
+      var(--dm-hiw-deep) 100%
+    );
+    background-size: 260% 260%;
+    animation: dm-hana-hiw-aurora 16s ease-in-out infinite;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  @keyframes dm-hana-hiw-aurora {
+    0%,
+    100% {
+      background-position: 0% 42%;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    40% {
+      background-position: 100% 58%;
+      transform: translate3d(1.5%, -1%, 0) scale(1.03);
+    }
+    70% {
+      background-position: 38% 0%;
+      transform: translate3d(-1%, 1.5%, 0) scale(1.02);
+    }
+  }
+
+  /* Title only — keeps readable measure; rows live in rows-outer for true viewport centering */
+  .dm-hana-hiw__container {
+    position: relative;
+    z-index: 1;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: max(1rem, env(safe-area-inset-left, 0px)) max(1rem, env(safe-area-inset-right, 0px));
+    padding-block: clamp(2.5rem, 6vw, 4rem) clamp(1rem, 3vw, 1.5rem);
+    box-sizing: border-box;
+  }
+
+  @media screen and (min-width: 768px) {
+    .dm-hana-hiw__container {
+      padding-inline: max(3.5rem, env(safe-area-inset-left, 0px)) max(3.5rem, env(safe-area-inset-right, 0px));
+    }
+  }
+
+  /* Full section width so 80vw strips align to viewport center (avoids left/right imbalance from padded parent) */
+  .dm-hana-hiw__rows-outer {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    margin: 0;
+    padding: 0 max(1rem, env(safe-area-inset-left, 0px)) clamp(2.5rem, 6vw, 4rem) max(1rem, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+  }
+
+  .dm-hana-hiw__title {
+    margin: 0 0 clamp(2rem, 5vw, 3.25rem);
+    text-align: center;
+    font-size: clamp(1.5rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  .dm-hana-hiw__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+  }
+
+  .dm-hana-hiw__row {
+    margin-bottom: clamp(2.25rem, 6vw, 4.25rem);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Desktop: ~80% viewport width, centered on viewport (parent rows-outer is full width) */
+  @media screen and (min-width: 750px) {
+    .dm-hana-hiw__row {
+      width: 80vw;
+      max-width: min(80vw, calc(100vw - 2rem));
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  .dm-hana-hiw__row:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Single flushed unit: image | copy, rounded outer shell only */
+  .dm-hana-hiw__pair {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    gap: 0;
+    border-radius: clamp(18px, 3vw, 26px);
+    overflow: hidden;
+    box-shadow: 0 18px 56px rgba(31, 23, 21, 0.18);
+    /* Mobile / base; desktop overrides height above */
+    min-height: 0;
+  }
+
+  /* Row 2: image right, text left */
+  .dm-hana-hiw__pair--flip {
+    flex-direction: row-reverse;
+  }
+
+  .dm-hana-hiw__visual {
+    flex: 1 1 50%;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    align-self: stretch;
+    display: flex;
+  }
+
+  .dm-hana-hiw__img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border-radius: 0;
+    object-fit: cover;
+    object-position: center;
+    flex: 1;
+    align-self: stretch;
+    min-height: 0;
+  }
+
+  .dm-hana-hiw__copy {
+    flex: 1 1 50%;
+    min-width: 0;
+    min-height: 0;
+    position: relative;
+    z-index: 2;
+    border-radius: 0;
+    padding: clamp(1.5rem, 4.5vw, 2.35rem) clamp(1.35rem, 3.8vw, 2.15rem);
+    background: #faf8f9;
+    border: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    text-align: left;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dm-hana-hiw__copy-inner {
+    width: 100%;
+    max-width: min(26rem, 100%);
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .dm-hana-hiw__label {
+    margin: 0 0 clamp(0.65rem, 1.5vw, 1rem);
+    font-size: clamp(0.65rem, 1.35vw, 0.75rem);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    line-height: 1.35;
+    color: #8b7a83;
+  }
+
+  .dm-hana-hiw__heading-feature {
+    margin: 0 0 clamp(0.85rem, 2vw, 1.15rem);
+    font-size: clamp(1.2rem, 3.8vw, 1.55rem);
+    line-height: 1.18;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: #21181d;
+  }
+
+  .dm-hana-hiw__desc {
+    margin: 0;
+    font-size: clamp(0.875rem, 2.2vw, 1rem);
+    line-height: 1.68;
+    font-weight: 400;
+    color: #4f454c;
+  }
+
+  .dm-hana-hiw__desc p {
+    margin: 0;
+  }
+
+  .dm-hana-hiw__desc p + p {
+    margin-top: 0.65em;
+  }
+
+  /* Desktop pair: min-height only so longer copy fits; visual sizing rules below */
+  /* Tablet: slightly tighter card padding */
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .dm-hana-hiw__copy {
+      padding: clamp(1.45rem, 3.2vw, 2rem) clamp(1.35rem, 3vw, 1.85rem);
+    }
+
+    .dm-hana-hiw__heading-feature {
+      font-size: clamp(1.2rem, 2.8vw, 1.42rem);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .dm-hana-hiw__copy {
+      padding: clamp(2.35rem, 4.2vw, 3.35rem) clamp(2.15rem, 3.8vw, 3.15rem);
+    }
+
+    .dm-hana-hiw__copy-inner {
+      max-width: min(28rem, 100%);
+    }
+
+    .dm-hana-hiw__heading-feature {
+      font-size: clamp(1.45rem, 2.2vw, 1.82rem);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .dm-hana-hiw__pair {
+      min-height: clamp(200px, 26vw, 300px);
+      max-height: none;
+      align-items: stretch;
+    }
+
+    /* Narrower image column + shorter than adjacent card */
+    .dm-hana-hiw__visual {
+      flex: 0 1 36%;
+      max-width: 38%;
+      align-self: center;
+      max-height: 74%;
+      min-height: 0;
+    }
+
+    .dm-hana-hiw__copy {
+      flex: 1 1 62%;
+      justify-content: center;
+      min-height: 0;
+      align-self: stretch;
+    }
+
+    /* Inner rounding on card edge beside image */
+    .dm-hana-hiw__pair:not(.dm-hana-hiw__pair--flip) .dm-hana-hiw__copy {
+      border-radius: 0 clamp(18px, 3vw, 28px) clamp(18px, 3vw, 28px) 0;
+    }
+
+    .dm-hana-hiw__pair--flip .dm-hana-hiw__copy {
+      border-radius: clamp(18px, 3vw, 28px) 0 0 clamp(18px, 3vw, 28px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dm-hana-hiw::before {
+      animation: none;
+      background-position: 50% 50%;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .dm-hana-hiw__row {
+      margin-bottom: clamp(2.25rem, 6vw, 3.25rem);
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .dm-hana-hiw__pair {
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    /* Row 2: text block first, then image */
+    .dm-hana-hiw__pair--flip {
+      flex-direction: column-reverse;
+    }
+
+    .dm-hana-hiw__visual {
+      flex: none;
+      width: 100%;
+      aspect-ratio: 16 / 12;
+      max-height: none;
+    }
+
+    .dm-hana-hiw__img {
+      min-height: 0;
+      flex: none;
+      height: 100%;
+    }
+
+    .dm-hana-hiw__copy {
+      flex: none;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .dm-hana-hiw__pair:not(.dm-hana-hiw__pair--flip) .dm-hana-hiw__copy {
+      border-radius: 0 0 clamp(16px, 4vw, 22px) clamp(16px, 4vw, 22px);
+    }
+
+    .dm-hana-hiw__pair--flip .dm-hana-hiw__copy {
+      border-radius: clamp(16px, 4vw, 22px) clamp(16px, 4vw, 22px) 0 0;
+    }
+
+    .dm-hana-hiw__heading-feature {
+      font-size: clamp(1.1rem, 5vw, 1.38rem);
+    }
+
+    .dm-hana-hiw__copy-inner {
+      max-width: 100%;
+    }
+  }
+</style>
+
+{% liquid
+  assign hiw_title_text = section_heading | default: 'Why It Works'
+  assign hiw_sid = section_id | default: 'static'
+%}
+<div class="dm-hana-hiw" aria-labelledby="dm-hana-hiw-title-{{ hiw_sid }}">
+  <div class="dm-hana-hiw__container">
+    <h2 class="dm-hana-hiw__title" id="dm-hana-hiw-title-{{ hiw_sid }}">{{ hiw_title_text | escape }}</h2>
+  </div>
+
+  <div class="dm-hana-hiw__rows-outer">
+    <div class="dm-hana-hiw__rows">
+      {% if blocks and blocks.size > 0 %}
+        {% for block in blocks %}
+          {% if block.type == 'feature' %}
+            {% liquid
+              assign flip_row = false
+              assign idx_mod = forloop.index0 | modulo: 2
+              if idx_mod == 1
+                assign flip_row = true
+              endif
+              assign fallback_asset = ''
+              assign fallback_alt = ''
+              case forloop.index
+                when 1
+                  assign fallback_asset = 'hana-Product_pictures_square_1_618x_37189545-124e-468c-9b62-0811e75a8ee0.webp'
+                  assign fallback_alt = 'Close-up of skincare texture on skin'
+                when 2
+                  assign fallback_asset = 'hana-Product_pictures_square_2_618x_69a69af0-2a3f-4f40-9de7-a7d36b828930.webp'
+                  assign fallback_alt = 'Woman sleeping during overnight skincare care'
+                when 3
+                  assign fallback_asset = 'hana-freepik_photo-a-closeup-of-a-25yearold-caucasian-womans-face-showing-her-lips-chin-and-neck-with-her-hands-gently-touching-her-face_0001.png'
+                  assign fallback_alt = 'Woman with smooth glowing-looking skin'
+              endcase
+              assign row_alt = fallback_alt
+              if block.settings.image_alt != blank
+                assign row_alt = block.settings.image_alt
+              endif
+            %}
+            {% if block.settings.image != blank %}
+              {% render 'dm-hana-how-it-works-row',
+                flip: flip_row,
+                image: block.settings.image,
+                alt: row_alt,
+                label: block.settings.label,
+                title: block.settings.title,
+                description: block.settings.description,
+                block: block %}
+            {% else %}
+              {% render 'dm-hana-how-it-works-row',
+                flip: flip_row,
+                image_asset: fallback_asset,
+                alt: row_alt,
+                label: block.settings.label,
+                title: block.settings.title,
+                description: block.settings.description,
+                block: block %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        {% render 'dm-hana-how-it-works-row',
+          flip: false,
+          image_asset: 'hana-Product_pictures_square_1_618x_37189545-124e-468c-9b62-0811e75a8ee0.webp',
+          alt: 'Close-up of skincare texture on skin',
+          label: 'COLLAGEN',
+          title: 'Overnight Collagen Renewal',
+          description: "While you sleep, HANA helps support your skin's natural overnight care routine. By morning, your skin feels smoother, firmer, and refreshed with a soft, hydrated-looking texture." %}
+
+        {% render 'dm-hana-how-it-works-row',
+          flip: true,
+          image_asset: 'hana-Product_pictures_square_2_618x_69a69af0-2a3f-4f40-9de7-a7d36b828930.webp',
+          alt: 'Woman sleeping during overnight skincare care',
+          label: 'HYDRATION',
+          title: 'Deep Overnight Hydration',
+          description: 'Through the night, the formula helps replenish moisture and soften the look of dryness so your complexion wakes up feeling supple, balanced, and comfortably hydrated.' %}
+
+        {% render 'dm-hana-how-it-works-row',
+          flip: false,
+          image_asset: 'hana-freepik_photo-a-closeup-of-a-25yearold-caucasian-womans-face-showing-her-lips-chin-and-neck-with-her-hands-gently-touching-her-face_0001.png',
+          alt: 'Woman with smooth glowing-looking skin',
+          label: 'RADIANCE',
+          title: 'Morning Glow & Radiance',
+          description: 'Carefully chosen ingredients help revive the look of dull, tired skin while supporting a more even tone and a healthy-looking luminosity you can feel confident about.' %}
+      {% endif %}
+    </div>
+  </div>
+</div>

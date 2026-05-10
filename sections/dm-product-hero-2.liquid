@@ -18,7 +18,7 @@
   }
 
   /* Desktop breakpoint - overriding the variable */
-  @media screen and (min-width: 768px) {
+    @media screen and (min-width: 768px) {
     :root {
       --{{ section.id }}--sectionPaddingTop_responsive_range: {{ section.settings.sectionPaddingTop_responsive_range_desktop }}px;
       --{{ section.id }}--sectionPaddingBottom_responsive_range: {{ section.settings.sectionPaddingBottom_responsive_range_desktop }}px;
@@ -28,6 +28,72 @@
       --{{ section.id }}--productImagesGalleryImageImageAspectRatio_responsive_select: {{ section.settings.productImagesGalleryImageImageAspectRatio_responsive_select_desktop }};
     }
   }
+
+  /* Product thumb slider — scoped to hero id so init always finds nodes */
+  #product-hero-section .dm-ph-mslider {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    gap: 0.5rem;
+    padding-bottom: 14px;
+  }
+
+  @media screen and (min-width: 640px) {
+    #product-hero-section .dm-ph-mslider {
+      gap: 0.65rem;
+    }
+  }
+
+  #product-hero-section .dm-ph-mslider__viewport {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow: visible;
+  }
+
+  #product-hero-section .dm-ph-mslider__btn {
+    -webkit-appearance: none;
+    appearance: none;
+    box-sizing: border-box !important;
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    flex-shrink: 0 !important;
+    align-self: center !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 999px !important;
+    border: 2px solid #9e3a66 !important;
+    background: #ffffff !important;
+    color: #9e3a66 !important;
+    cursor: pointer !important;
+    box-shadow: 0 2px 10px rgba(158, 58, 102, 0.15);
+    transition: background 0.15s ease, color 0.15s ease;
+    z-index: 5;
+    position: relative;
+  }
+
+  #product-hero-section .dm-ph-mslider__btn:hover {
+    background: rgba(158, 58, 102, 0.08) !important;
+    color: #7d2e52 !important;
+  }
+
+  #product-hero-section .dm-ph-mslider__btn:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(158, 58, 102, 0.35) !important;
+  }
+
+  #product-hero-section .dm-ph-mslider__btn svg {
+    display: block !important;
+    pointer-events: none;
+  }
 </style>
 
 
@@ -36,8 +102,8 @@
   data-section-combination="{{section.settings.section_combination}}"
   class="block relative w-full transition-colors bg-background "
   style="background: {{ section.settings.sectionBackground_color }}; padding-top: var(--{{ section.id }}--sectionPaddingTop_responsive_range); padding-bottom: var(--{{ section.id }}--sectionPaddingBottom_responsive_range); padding-left: var(--{{ section.id }}--sectionPaddingLeft_responsive_range); padding-right: var(--{{ section.id }}--sectionPaddingRight_responsive_range);">
-  <div class="relative mx-auto grid grid-cols-1 gap-y-4 md:gap-y-10 lg:grid-cols-2 lg:gap-x-14 " style="max-width: {{ section.settings.sectionMaxWidth_number }}px;">
-    <div class="flex flex-col gap-y-2 md:gap-y-4">
+  <div class="relative z-10 mx-auto grid grid-cols-1 gap-y-4 md:gap-y-10 lg:grid-cols-2 lg:gap-x-14 " style="max-width: {{ section.settings.sectionMaxWidth_number }}px;">
+    <div class="flex min-w-0 flex-col gap-y-2 md:gap-y-4">
       <div>
 
         {% assign fallback_media = product.media | where: "position", 1 | first %}
@@ -103,72 +169,20 @@
 
       {% assign mobile_limit = section.settings.productImagesGalleryMediaNumberDisplayed_responsive_number_mobile | default: 6 %}
       {% assign desktop_limit = section.settings.productImagesGalleryMediaNumberDisplayed_responsive_number_desktop | default: 6 %}
+      {% assign thumb_gallery_limit = mobile_limit %}
+      {% if desktop_limit > thumb_gallery_limit %}
+        {% assign thumb_gallery_limit = desktop_limit %}
+      {% endif %}
 
-      <div class=" pb-4 -mb-4 flex-row gap-4 w-full snap-x md:snap-none snap-mandatory overflow-x-auto scrollbar-hide md:overflow-visible [&>div]:basis-1/3 [&>div]:shrink-0 md:[&>div]:basis-auto md:grid md:grid-cols-2 flex sm:dm-hidden md:dm-hidden" data-dm-element="product-images-gallery">
-        {%- for media in product.media offset: 0 limit: mobile_limit -%}
-
-          {% assign fallback_media = product.media | where: "position", 1 | first %}
-
-          {% assign media = media | default: fallback_media %}
-          {% assign media_url = media | image_url %}
-
-          {% unless media_url == blank %}
-
-            {% assign media_style_value = settings.media_style %}
-            {% if section.settings.productImagesGalleryImageImageStyle_select != blank %}
-              {% assign media_style_value = section.settings.productImagesGalleryImageImageStyle_select %}
-            {% endif %}
-
-
-            {%- capture media_classes -%}
-              {% render 'dm_classname_utils'
-               , type: "media",
-               media_style: media_style_value %}
-            {%- endcapture -%}
-
-            {% capture media_className %}
-              border-solid h-full w-full object-cover {{ media_classes | strip }}
-            {% endcapture %}
-            {% assign media_className = media_className | strip %}
-
-            {% capture media_style %}
-              {% if section.settings.productImagesGalleryImageImageBorder_number != blank %}
-                border-width: {{ section.settings.productImagesGalleryImageImageBorder_number }}px;
-              {% endif %}
-              {% if section.settings.productImagesGalleryImageImageBorder_color != blank %}
-                border-color: {{ section.settings.productImagesGalleryImageImageBorder_color }};
-              {% endif %}
-              {% if section.settings.productImagesGalleryImageImageRadius_number != blank %}
-                border-radius: {{ section.settings.productImagesGalleryImageImageRadius_number }}px;
-              {% endif %}
-            {% endcapture %}
-
-            {% assign media_style = media_style | strip %}
-
-            <div
-              data-media-id="{{media.id}}"
-              class="relative max-w-full "
-              style="aspect-ratio: var(--{{ section.id }}--productImagesGalleryImageImageAspectRatio_responsive_select);">
-
-              {% if media.media_type == 'video' %}
-                {{ media | media_tag: image_size: '2048x', autoplay: true, loop: true, controls: false, preload: 'none', class: media_className, style: media_style }}
-              {% else %}
-                <img
-                  src="{{ media_url }}"
-                  alt=" "
-                  draggable="false"
-                  class="{{media_className}}"
-                  style="{{media_style}}">
-              {% endif %}
-            </div>
-
-          {% endunless %}
-
-        {%- endfor -%}
-      </div>
-
-      <div class=" pb-4 -mb-4 flex flex-row gap-4 w-full snap-x md:snap-none snap-mandatory overflow-x-auto scrollbar-hide md:overflow-visible [&>div]:basis-1/3 [&>div]:shrink-0 md:[&>div]:basis-auto md:grid md:grid-cols-2 dm-hidden sm:flex" data-dm-element="product-images-gallery">
-        {%- for media in product.media offset: 1 limit: desktop_limit -%}
+      <div class="dm-ph-mslider flex w-full flex-row items-center">
+        <button type="button" class="dm-ph-mslider__btn dm-ph-mslider__btn--prev" aria-label="Previous thumbnails">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="dm-ph-mslider__viewport">
+          <div class="dm-product-media-carousel pb-4 flex flex-row gap-4 w-full snap-x snap-mandatory overflow-x-auto scrollbar-hide [&>div]:basis-1/3 [&>div]:shrink-0" data-dm-element="product-images-gallery">
+        {%- for media in product.media offset: 0 limit: thumb_gallery_limit -%}
 
           {% assign fallback_media = product.media | where: "position", 1 | first %}
 
@@ -228,6 +242,13 @@
           {% endunless %}
 
         {%- endfor -%}
+          </div>
+        </div>
+        <button type="button" class="dm-ph-mslider__btn dm-ph-mslider__btn--next" aria-label="Next thumbnails">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M10 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
       </div>
 
     </div>
@@ -255,8 +276,6 @@
             {% render 'dm-product-hero-faq-1' block: block, blockMarginTop_responsive_range_desktop: block.settings.blockMarginTop_responsive_range_desktop, blockMarginTop_responsive_range_mobile: block.settings.blockMarginTop_responsive_range_mobile, blockMarginBottom_responsive_range_desktop: block.settings.blockMarginBottom_responsive_range_desktop, blockMarginBottom_responsive_range_mobile: block.settings.blockMarginBottom_responsive_range_mobile, faqRotateIcon_checkbox: block.settings.faqRotateIcon_checkbox, faqStyle_select: block.settings.faqStyle_select, faqSize_select: block.settings.faqSize_select, faqAccordionBackground_color: block.settings.faqAccordionBackground_color, faqAccordionBorder_color: block.settings.faqAccordionBorder_color, faqAccordionRadius_number: block.settings.faqAccordionRadius_number, faqAccordionBorder_number: block.settings.faqAccordionBorder_number, faqTitle_text: block.settings.faqTitle_text, faqTitleTextColor_color: block.settings.faqTitleTextColor_color, faqTitleTextStyle_font_desktop: block.settings.faqTitleTextStyle_font_desktop, faqTitleTextStyle_font_mobile: block.settings.faqTitleTextStyle_font_mobile, faqTitleTextAlign_text_alignment_desktop: block.settings.faqTitleTextAlign_text_alignment_desktop, faqTitleTextAlign_text_alignment_mobile: block.settings.faqTitleTextAlign_text_alignment_mobile, faqContent_text: block.settings.faqContent_text, faqContentTextColor_color: block.settings.faqContentTextColor_color, faqContentTextStyle_font_desktop: block.settings.faqContentTextStyle_font_desktop, faqContentTextStyle_font_mobile: block.settings.faqContentTextStyle_font_mobile, faqContentTextAlign_text_alignment_desktop: block.settings.faqContentTextAlign_text_alignment_desktop, faqContentTextAlign_text_alignment_mobile: block.settings.faqContentTextAlign_text_alignment_mobile, faqIcon_icon: block.settings.faqIcon_icon, faqIconIconColor_color: block.settings.faqIconIconColor_color, faqIconIconSize_responsive_range_desktop: block.settings.faqIconIconSize_responsive_range_desktop, faqIconIconSize_responsive_range_mobile: block.settings.faqIconIconSize_responsive_range_mobile %}
             {%- when 'dm-product-hero-text-1' -%}
             {% render 'dm-product-hero-text-1' block: block, blockMarginTop_responsive_range_desktop: block.settings.blockMarginTop_responsive_range_desktop, blockMarginTop_responsive_range_mobile: block.settings.blockMarginTop_responsive_range_mobile, blockMarginBottom_responsive_range_desktop: block.settings.blockMarginBottom_responsive_range_desktop, blockMarginBottom_responsive_range_mobile: block.settings.blockMarginBottom_responsive_range_mobile, text_text: block.settings.text_text, textTextColor_color: block.settings.textTextColor_color, textTextStyle_font_desktop: block.settings.textTextStyle_font_desktop, textTextStyle_font_mobile: block.settings.textTextStyle_font_mobile, textTextAlign_text_alignment_desktop: block.settings.textTextAlign_text_alignment_desktop, textTextAlign_text_alignment_mobile: block.settings.textTextAlign_text_alignment_mobile %}
-            {%- when 'dm-product-hero-price-1' -%}
-            {% render 'dm-product-hero-price-1' block: block, blockMarginTop_responsive_range_desktop: block.settings.blockMarginTop_responsive_range_desktop, blockMarginTop_responsive_range_mobile: block.settings.blockMarginTop_responsive_range_mobile, blockMarginBottom_responsive_range_desktop: block.settings.blockMarginBottom_responsive_range_desktop, blockMarginBottom_responsive_range_mobile: block.settings.blockMarginBottom_responsive_range_mobile, productPricePriceTextColor_color: block.settings.productPricePriceTextColor_color, productPricePriceTextStyle_font_desktop: block.settings.productPricePriceTextStyle_font_desktop, productPricePriceTextStyle_font_mobile: block.settings.productPricePriceTextStyle_font_mobile, productPricePriceTextAlign_text_alignment_desktop: block.settings.productPricePriceTextAlign_text_alignment_desktop, productPricePriceTextAlign_text_alignment_mobile: block.settings.productPricePriceTextAlign_text_alignment_mobile, productPriceCompareAtPriceTextColor_color: block.settings.productPriceCompareAtPriceTextColor_color, productPriceCompareAtPriceTextStyle_font_desktop: block.settings.productPriceCompareAtPriceTextStyle_font_desktop, productPriceCompareAtPriceTextStyle_font_mobile: block.settings.productPriceCompareAtPriceTextStyle_font_mobile, productPriceCompareAtPriceTextAlign_text_alignment_desktop: block.settings.productPriceCompareAtPriceTextAlign_text_alignment_desktop, productPriceCompareAtPriceTextAlign_text_alignment_mobile: block.settings.productPriceCompareAtPriceTextAlign_text_alignment_mobile, productDiscountTagHideBadge_checkbox: block.settings.productDiscountTagHideBadge_checkbox, productDiscountTagTagBackground_color: block.settings.productDiscountTagTagBackground_color, productDiscountTagTagBorder_color: block.settings.productDiscountTagTagBorder_color, productDiscountTagTagRadius_number: block.settings.productDiscountTagTagRadius_number, productDiscountTagTagBorder_number: block.settings.productDiscountTagTagBorder_number, productDiscountTagText_text: block.settings.productDiscountTagText_text, productDiscountTagTextTextColor_color: block.settings.productDiscountTagTextTextColor_color, productDiscountTagTextTextStyle_font_desktop: block.settings.productDiscountTagTextTextStyle_font_desktop, productDiscountTagTextTextStyle_font_mobile: block.settings.productDiscountTagTextTextStyle_font_mobile, productDiscountTagTextTextAlign_text_alignment_desktop: block.settings.productDiscountTagTextTextAlign_text_alignment_desktop, productDiscountTagTextTextAlign_text_alignment_mobile: block.settings.productDiscountTagTextTextAlign_text_alignment_mobile, productDiscountTagIcon_icon: block.settings.productDiscountTagIcon_icon, productDiscountTagIconIconColor_color: block.settings.productDiscountTagIconIconColor_color, productDiscountTagIconIconSize_responsive_range_desktop: block.settings.productDiscountTagIconIconSize_responsive_range_desktop, productDiscountTagIconIconSize_responsive_range_mobile: block.settings.productDiscountTagIconIconSize_responsive_range_mobile %}
             {%- when 'dm-ph-variants-1' -%}
             {% render 'dm-ph-variants-1' block: block, blockMarginTop_responsive_range_desktop: block.settings.blockMarginTop_responsive_range_desktop, blockMarginTop_responsive_range_mobile: block.settings.blockMarginTop_responsive_range_mobile, blockMarginBottom_responsive_range_desktop: block.settings.blockMarginBottom_responsive_range_desktop, blockMarginBottom_responsive_range_mobile: block.settings.blockMarginBottom_responsive_range_mobile, variantPickertype_select: block.settings.variantPickertype_select, variantPickerOptionLabelTextColor_color: block.settings.variantPickerOptionLabelTextColor_color, variantPickerOptionLabelTextStyle_font_desktop: block.settings.variantPickerOptionLabelTextStyle_font_desktop, variantPickerOptionLabelTextStyle_font_mobile: block.settings.variantPickerOptionLabelTextStyle_font_mobile, variantPickerOptionLabelTextAlign_text_alignment_desktop: block.settings.variantPickerOptionLabelTextAlign_text_alignment_desktop, variantPickerOptionLabelTextAlign_text_alignment_mobile: block.settings.variantPickerOptionLabelTextAlign_text_alignment_mobile, variantPickerButtonSelectedButtonVariant_select: block.settings.variantPickerButtonSelectedButtonVariant_select, variantPickerButtonUnSelectedButtonVariant_select: block.settings.variantPickerButtonUnSelectedButtonVariant_select, variantPickerButtonButtonSize_select: block.settings.variantPickerButtonButtonSize_select, variantPickerButtonButtonRadius_number: block.settings.variantPickerButtonButtonRadius_number, variantPickerButtonText_text: block.settings.variantPickerButtonText_text, variantPickerButtonTextTextStyle_font_desktop: block.settings.variantPickerButtonTextTextStyle_font_desktop, variantPickerButtonTextTextStyle_font_mobile: block.settings.variantPickerButtonTextTextStyle_font_mobile %}
             {%- when 'dm-ph-buy-buttons-1' -%}
@@ -285,7 +304,103 @@
       </div>
     </dm-product-info>
   </div>
-  {{ section.settings.bottom_mask }}</dm-product-hero-section>
+  <script>
+    (function () {
+      var dmPhSectionId = '{{ section.id }}';
+      var sectionHero =
+        document.currentScript && document.currentScript.closest
+          ? document.currentScript.closest('dm-product-hero-section')
+          : null;
+
+      function resolveHero(scopeRoot) {
+        if (!scopeRoot) return sectionHero || document.getElementById('product-hero-section');
+        if (scopeRoot.nodeType !== 1) return sectionHero || document.getElementById('product-hero-section');
+        var tag = (scopeRoot.tagName || '').toLowerCase();
+        if (tag === 'dm-product-hero-section') return scopeRoot;
+        var inner =
+          scopeRoot.querySelector && scopeRoot.querySelector('dm-product-hero-section');
+        return inner || sectionHero || document.getElementById('product-hero-section');
+      }
+
+      function initDmPhThumbnailSliders(scopeRoot) {
+        var hero = resolveHero(scopeRoot);
+        if (!hero) return;
+
+        if (hero._dmPhThumbSliderAbort && typeof hero._dmPhThumbSliderAbort.abort === 'function') {
+          hero._dmPhThumbSliderAbort.abort();
+        }
+        hero._dmPhThumbSliderAbort = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        var signal = hero._dmPhThumbSliderAbort ? hero._dmPhThumbSliderAbort.signal : undefined;
+
+        var listenerOpts = signal ? { signal: signal } : undefined;
+
+        hero.addEventListener(
+          'click',
+          function (event) {
+            var t = event.target;
+            if (!t || !t.closest) return;
+            var btn = t.closest('.dm-ph-mslider__btn');
+            if (!btn || !btn.closest('.dm-ph-mslider')) return;
+            if (!hero.contains(btn)) return;
+
+            var slider = btn.closest('.dm-ph-mslider');
+            var carousel = slider ? slider.querySelector('.dm-product-media-carousel') : null;
+            if (!carousel) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            var item = carousel.querySelector(':scope > div');
+            if (!item) return;
+            var st = window.getComputedStyle(carousel);
+            var gap = parseFloat(st.columnGap || st.gap);
+            if (isNaN(gap)) gap = 16;
+            var w = item.getBoundingClientRect().width;
+            var dir = btn.classList.contains('dm-ph-mslider__btn--prev') ? -1 : 1;
+            carousel.scrollBy({
+              left: dir * (w + gap),
+              behavior: 'smooth',
+            });
+          },
+          listenerOpts
+        );
+      }
+
+      function resetBindingsInHero(hero) {
+        if (!hero || !hero._dmPhThumbSliderAbort) return;
+        if (typeof hero._dmPhThumbSliderAbort.abort === 'function') {
+          hero._dmPhThumbSliderAbort.abort();
+        }
+        hero._dmPhThumbSliderAbort = null;
+      }
+
+      function boot() {
+        initDmPhThumbnailSliders(null);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+      } else {
+        boot();
+      }
+
+      document.addEventListener('shopify:section:load', function (ev) {
+        if (!ev.detail || String(ev.detail.sectionId) !== dmPhSectionId) return;
+        var hero = resolveHero(ev.target);
+        resetBindingsInHero(hero);
+        initDmPhThumbnailSliders(hero);
+      });
+    })();
+  </script>
+  {% if section.settings.bottom_mask != blank %}
+    <div
+      class="dm-ph-bottom-mask pointer-events-none absolute inset-0 z-0 overflow-hidden"
+      aria-hidden="true"
+    >
+      {{ section.settings.bottom_mask }}
+    </div>
+  {% endif %}
+</dm-product-hero-section>
 
 
 {% schema %}

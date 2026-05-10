@@ -1,0 +1,130 @@
+{% comment %}
+  Inline review form (Shopify contact form). @param section
+{% endcomment %}
+{% liquid
+  assign form_id = 'dm-review-contact-' | append: section.id
+%}
+<div
+  id="dm-review-form-panel-{{ section.id }}"
+  class="dm-review-form-wrap"
+  hidden
+>
+  <div class="dm-review-form__box">
+    <div class="dm-review-form__head">
+      <h3 class="dm-review-form__title" id="dm-review-form-heading-{{ section.id }}">Write a review</h3>
+      <button type="button" class="dm-review-form__close js-dm-review-close" aria-label="{{ 'actions.close' | t }}">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    {% form 'contact', id: form_id, class: 'dm-review-form' %}
+      <input
+        type="hidden"
+        name="contact[subject]"
+        value="{{ section.settings.product_title | prepend: 'Review — ' | escape }}"
+      >
+
+      {% if form.posted_successfully? %}
+        <p class="dm-review-form__success" tabindex="-1">Thank you for your review.</p>
+      {% else %}
+        {% if form.errors %}
+          <div class="dm-review-form__errors">{{ form.errors | default_errors }}</div>
+        {% endif %}
+
+        <div
+          class="dm-review-form__shell js-dm-review-shell"
+          data-product-title="{{ section.settings.product_title | escape }}"
+        >
+          <div class="dm-review-form__rating-row">
+            <span class="dm-review-form__rating-label" id="dm-review-rating-label-{{ section.id }}">Your rating</span>
+            <div
+              class="dm-review-form__stars js-dm-review-stars"
+              role="radiogroup"
+              aria-labelledby="dm-review-rating-label-{{ section.id }}"
+            >
+              {% for i in (1..5) %}
+                <button
+                  type="button"
+                  class="dm-review-form__star-btn{% if i == 5 %} is-active{% endif %}"
+                  data-value="{{ i }}"
+                  aria-label="{{ i }} out of 5 stars"
+                  aria-pressed="{% if i == 5 %}true{% else %}false{% endif %}"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                  </svg>
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="dm-review-form__row-inputs">
+            <label class="dm-review-form__field">
+              <span class="visually-hidden">Your name</span>
+              <input
+                type="text"
+                name="contact[name]"
+                autocomplete="name"
+                placeholder="Your name"
+                required
+                class="dm-review-form__input"
+              >
+            </label>
+            <label class="dm-review-form__field">
+              <span class="visually-hidden">Your email</span>
+              <input
+                type="email"
+                name="contact[email]"
+                autocomplete="email"
+                placeholder="Your email"
+                required
+                class="dm-review-form__input"
+              >
+            </label>
+          </div>
+
+          <label class="dm-review-form__field dm-review-form__field--full">
+            <span class="visually-hidden">Review comments</span>
+            <textarea
+              name="contact[body]"
+              class="dm-review-form__textarea js-dm-review-body"
+              rows="6"
+              placeholder="Enter your comments here"
+              required
+            ></textarea>
+          </label>
+
+          <div class="dm-review-form__upload-wrap dm-review-form__upload-root js-dm-review-upload-root">
+            <label class="dm-review-form__upload js-dm-review-upload-zone">
+              <input type="file" class="dm-review-form__file-input js-dm-review-file" accept="image/*" tabindex="-1">
+              <span class="dm-review-form__upload-inner js-dm-review-upload-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+                </svg>
+                <span>Add photo</span>
+              </span>
+              <span class="dm-review-form__thumb-wrap js-dm-review-thumb-wrap" hidden>
+                <img class="dm-review-form__preview-img js-dm-review-preview-img" width="320" height="320" alt="">
+              </span>
+            </label>
+            <div class="dm-review-form__thumb-actions js-dm-review-thumb-actions" hidden>
+              <button type="button" class="dm-review-form__thumb-btn dm-review-form__thumb-btn--ghost js-dm-review-change-photo">
+                Change photo
+              </button>
+              <button type="button" class="dm-review-form__thumb-btn dm-review-form__thumb-btn--danger js-dm-review-remove-photo">
+                Remove photo
+              </button>
+            </div>
+            <p class="dm-review-form__upload-hint">
+              Preview shows on your device only — images are not sent with this contact message yet.
+            </p>
+          </div>
+
+          <div class="dm-review-form__submit-wrap">
+            <button type="submit" class="dm-review-form__submit">Submit review</button>
+          </div>
+        </div>
+      {% endif %}
+    {% endform %}
+  </div>
+</div>

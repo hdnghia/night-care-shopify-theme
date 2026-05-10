@@ -1,0 +1,1654 @@
+{% comment %}
+  ProductReviewsSection — ecommerce-style review block (summary, breakdown, masonry grid).
+{% endcomment %}
+{% liquid
+  assign dm_pr_review_count = 0
+  for block in section.blocks
+    if block.type == 'review'
+      assign dm_pr_review_count = dm_pr_review_count | plus: 1
+    endif
+  endfor
+  assign dm_pr_initial_visible = section.settings.reviews_initial_visible | default: 12
+%}
+<section
+  class="dm-product-reviews dm-section"
+  id="ProductReviews-{{ section.id }}"
+  data-dm-review-root="{{ section.id }}"
+  data-dm-pr-initial-visible="{{ dm_pr_initial_visible }}"
+>
+  <div class="dm-product-reviews__inner">
+    <header class="dm-product-reviews__header">
+      <h2 class="dm-product-reviews__title">{{ section.settings.section_heading | escape }}</h2>
+      {% if section.settings.product_title != blank %}
+        <p class="dm-product-reviews__product">{{ section.settings.product_title | escape }}</p>
+      {% endif %}
+    </header>
+
+    {% render 'dm-review-summary', section: section %}
+
+    <div class="dm-product-reviews__sort-row">
+      <label class="dm-product-reviews__sort-label" for="dm-pr-sort-{{ section.id }}">
+        {{- section.settings.sort_label | escape -}}
+      </label>
+      <select
+        id="dm-pr-sort-{{ section.id }}"
+        class="dm-product-reviews__sort-select"
+        data-dm-pr-sort="{{ section.id }}"
+        aria-label="{{ section.settings.sort_label | escape }}"
+      >
+        <option value="theme">{{ section.settings.sort_option_theme | escape }}</option>
+        <option value="newest">{{ section.settings.sort_option_newest | escape }}</option>
+        <option value="oldest">{{ section.settings.sort_option_oldest | escape }}</option>
+        <option value="highest">{{ section.settings.sort_option_highest | escape }}</option>
+        <option value="lowest">{{ section.settings.sort_option_lowest | escape }}</option>
+      </select>
+    </div>
+
+    <hr class="dm-product-reviews__divider" aria-hidden="true">
+    {% render 'dm-review-form', section: section %}
+
+    <div
+      id="dm-product-reviews-masonry-{{ section.id }}"
+      class="dm-product-reviews__masonry{% if dm_pr_review_count > dm_pr_initial_visible %} dm-product-reviews__masonry--collapsible{% endif %}"
+    >
+      {% assign dm_pr_review_index = 0 %}
+      {% for block in section.blocks %}
+        {% if block.type == 'review' %}
+          {% assign dm_pr_review_index = dm_pr_review_index | plus: 1 %}
+          <div
+            class="dm-product-reviews__review-slot{% if dm_pr_review_index > dm_pr_initial_visible %} dm-product-reviews__review-slot--extra{% endif %}"
+            data-dm-pr-order="{{ dm_pr_review_index }}"
+            data-dm-pr-rating="{{ block.settings.rating }}"
+            data-dm-pr-date="{{ block.settings.review_date | strip | escape }}"
+          >
+            {% render 'dm-review-card',
+              customer_name: block.settings.customer_name,
+              customer_initial: block.settings.customer_initial,
+              country_emoji: block.settings.country_emoji,
+              rating: block.settings.rating,
+              review_body: block.settings.review_body,
+              review_date: block.settings.review_date,
+              image_asset: block.settings.image_asset,
+              block: block %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if dm_pr_review_count > dm_pr_initial_visible %}
+      <div class="dm-product-reviews__read-more-row">
+        <button
+          type="button"
+          class="dm-product-reviews__read-more"
+          data-dm-pr-read-more="{{ section.id }}"
+          aria-expanded="false"
+          aria-controls="dm-product-reviews-masonry-{{ section.id }}"
+        >
+          {{- section.settings.read_more_label | escape -}}
+        </button>
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .dm-product-reviews {
+    width: 100%;
+    margin: 0;
+    padding: clamp(2.75rem, 6vw, 4.5rem) max(1rem, env(safe-area-inset-left, 0px))
+      clamp(2.75rem, 6vw, 4.5rem) max(1rem, env(safe-area-inset-right, 0px));
+    box-sizing: border-box;
+    background: {{ section.settings.background_color }};
+  }
+
+  .dm-product-reviews__inner {
+    max-width: 76rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .dm-product-reviews__header {
+    text-align: center;
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .dm-product-reviews__title {
+    margin: 0;
+    font-family: ui-serif, Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.65rem, 3.8vw, 2.25rem);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: #1f1715;
+  }
+
+  .dm-product-reviews__product {
+    margin: 0.5rem 0 0;
+    font-size: 0.95rem;
+    color: #6b6066;
+  }
+
+  /* StarRating */
+  .dm-review-star-rating {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
+  .dm-review-star-rating__shell {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .dm-review-star-rating__track {
+    display: flex;
+    gap: 4px;
+    color: rgba(31, 23, 21, 0.15);
+  }
+
+  .dm-review-star-rating__fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .dm-review-star-rating__fill-inner {
+    display: flex;
+    gap: 4px;
+    color: #c9a227;
+  }
+
+  .dm-review-star-rating--lg .dm-review-star-rating__track,
+  .dm-review-star-rating--lg .dm-review-star-rating__fill-inner {
+    gap: 5px;
+  }
+
+  .dm-review-star-rating--md .dm-review-star-rating__track,
+  .dm-review-star-rating--md .dm-review-star-rating__fill-inner {
+    gap: 3px;
+  }
+
+  /* ReviewSummary */
+  .dm-review-summary {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.5rem, 3vw, 2.25rem);
+    align-items: start;
+    padding: clamp(1.35rem, 2.5vw, 1.75rem);
+    border-radius: 18px;
+    background: #fff;
+    border: 1px solid rgba(158, 58, 102, 0.08);
+    box-shadow: 0 12px 40px rgba(31, 23, 21, 0.06);
+    margin-bottom: 1.25rem;
+  }
+
+  .dm-review-summary__avg {
+    text-align: center;
+  }
+
+  .dm-review-summary__score {
+    font-size: clamp(2.75rem, 6vw, 3.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: #1f1715;
+    margin-bottom: 0.35rem;
+  }
+
+  .dm-review-summary__total {
+    margin: 0.65rem 0 0;
+    font-size: 0.95rem;
+    color: #5e5450;
+  }
+
+  .dm-rating-breakdown {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .dm-rating-breakdown__row {
+    display: grid;
+    grid-template-columns: 14px 18px 1fr 28px;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8125rem;
+    color: #3d3538;
+  }
+
+  .dm-rating-breakdown__label {
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    font-weight: 600;
+  }
+
+  .dm-rating-breakdown__star-icon {
+    color: #c9a227;
+    display: flex;
+    justify-content: center;
+  }
+
+  .dm-rating-breakdown__bar-wrap {
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(31, 23, 21, 0.08);
+    overflow: hidden;
+  }
+
+  .dm-rating-breakdown__bar {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #cf91ad, #9e3a66);
+    min-width: 0;
+    transition: width 0.35s ease;
+  }
+
+  .dm-rating-breakdown__count {
+    font-variant-numeric: tabular-nums;
+    color: #7a6e73;
+    text-align: right;
+  }
+
+  .dm-review-summary__photos-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .dm-review-summary__thumb-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    max-width: 280px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .dm-review-summary__thumb {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f7ece7;
+  }
+
+  .dm-review-summary__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .dm-review-summary__write-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 1.25rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    background: #cf91ad;
+    color: #fff;
+    transition: background 0.2s ease, transform 0.15s ease;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 280px;
+    margin: 0 auto;
+    font-family: inherit;
+  }
+
+  .dm-review-summary__write-btn:hover {
+    background: #b87a96;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dm-review-summary {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr) minmax(0, 1fr);
+      align-items: center;
+    }
+
+    .dm-review-summary__avg {
+      text-align: left;
+    }
+
+    .dm-review-summary__photos-cta {
+      align-items: flex-end;
+    }
+
+    .dm-review-summary__thumb-grid {
+      margin: 0;
+      margin-left: auto;
+      max-width: 100%;
+    }
+
+    .dm-review-summary__write-btn {
+      width: auto;
+      min-width: 10rem;
+      margin: 0;
+      align-self: flex-end;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .dm-review-summary__thumb-grid {
+      grid-template-columns: repeat(4, minmax(0, 52px));
+      max-width: none;
+      justify-content: flex-end;
+    }
+  }
+
+  /* Sort */
+  .dm-product-reviews__sort-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5rem 0.75rem;
+    margin: 1rem 0 1.25rem;
+  }
+
+  .dm-product-reviews__sort-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #3d3538;
+    margin: 0;
+  }
+
+  .dm-product-reviews__sort-select {
+    min-width: 11rem;
+    max-width: 100%;
+    padding: 0.45rem 2rem 0.45rem 0.65rem;
+    border-radius: 10px;
+    border: 1px solid rgba(158, 58, 102, 0.28);
+    background-color: #fff;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239e3a66' d='M1.4 0 6 4.6 10.6 0 12 1.4l-6 6-6-6z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+    background-size: 12px 8px;
+    color: #1f1715;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    box-sizing: border-box;
+  }
+
+  .dm-product-reviews__sort-select:hover {
+    border-color: rgba(158, 58, 102, 0.45);
+  }
+
+  .dm-product-reviews__sort-select:focus {
+    outline: none;
+    border-color: #9e3a66;
+    box-shadow: 0 0 0 3px rgba(158, 58, 102, 0.2);
+  }
+
+  .dm-product-reviews__divider {
+    margin: 0 0 1.25rem;
+    border: none;
+    border-top: 1px solid rgba(31, 23, 21, 0.08);
+  }
+
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
+  /* Review write form */
+  .dm-review-form-wrap {
+    max-width: 36rem;
+    margin: 0 auto 2rem;
+  }
+
+  .dm-review-form-wrap[hidden] {
+    display: none !important;
+  }
+
+  .dm-review-form-wrap.dm-review-form-wrap--open:not([hidden]) {
+    display: block;
+  }
+
+  .dm-review-form__box {
+    padding: clamp(1.25rem, 3vw, 1.75rem);
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(158, 58, 102, 0.1);
+    box-shadow: 0 10px 36px rgba(31, 23, 21, 0.06);
+    box-sizing: border-box;
+  }
+
+  .dm-review-form__head {
+    position: relative;
+    margin-bottom: 1.25rem;
+    padding-right: 2.75rem;
+    min-height: 2.25rem;
+  }
+
+  .dm-review-form__title {
+    margin: 0;
+    font-family: ui-serif, Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.35rem, 3vw, 1.6rem);
+    font-weight: 500;
+    color: #1f1715;
+    text-align: center;
+  }
+
+  .dm-review-form__close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: 999px;
+    background: rgba(31, 23, 21, 0.06);
+    color: #3d3538;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease;
+  }
+
+  .dm-review-form__close:hover {
+    background: rgba(31, 23, 21, 0.1);
+  }
+
+  .dm-review-form__success {
+    margin: 0;
+    padding: 1rem;
+    text-align: center;
+    font-size: 1rem;
+    color: #2d6a4f;
+    background: rgba(45, 106, 79, 0.08);
+    border-radius: 12px;
+  }
+
+  .dm-review-form__errors {
+    margin-bottom: 1rem;
+  }
+
+  .dm-review-form__rating-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-bottom: 1.15rem;
+    justify-content: center;
+  }
+
+  .dm-review-form__rating-label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #1f1715;
+  }
+
+  .dm-review-form__stars {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .dm-review-form__star-btn {
+    padding: 4px;
+    border: none;
+    background: transparent;
+    color: rgba(31, 23, 21, 0.18);
+    cursor: pointer;
+    border-radius: 6px;
+    line-height: 0;
+    transition: color 0.15s ease, transform 0.1s ease;
+  }
+
+  .dm-review-form__star-btn:hover {
+    color: rgba(201, 162, 39, 0.65);
+    transform: scale(1.06);
+  }
+
+  .dm-review-form__star-btn.is-active {
+    color: #c9a227;
+  }
+
+  .dm-review-form__row-inputs {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dm-review-form__row-inputs {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .dm-review-form__field {
+    display: block;
+    margin: 0;
+  }
+
+  .dm-review-form__field--full {
+    margin-bottom: 1rem;
+  }
+
+  .dm-review-form__input,
+  .dm-review-form__textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    border: 1px solid rgba(31, 23, 21, 0.12);
+    font-family: inherit;
+    font-size: 0.9375rem;
+    color: #1f1715;
+    background: #fefcfd;
+    transition: border-color 0.15s ease;
+  }
+
+  .dm-review-form__input::placeholder,
+  .dm-review-form__textarea::placeholder {
+    color: #93898e;
+  }
+
+  .dm-review-form__input:focus,
+  .dm-review-form__textarea:focus {
+    outline: none;
+    border-color: rgba(158, 58, 102, 0.45);
+    box-shadow: 0 0 0 3px rgba(207, 145, 173, 0.25);
+  }
+
+  .dm-review-form__textarea {
+    min-height: 9rem;
+    resize: vertical;
+  }
+
+  .dm-review-form__upload-wrap {
+    margin-bottom: 1.25rem;
+  }
+
+  .dm-review-form__upload {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    border-radius: 12px;
+    border: 2px dashed rgba(158, 58, 102, 0.35);
+    background: rgba(253, 248, 250, 0.85);
+    padding: 1.35rem 1rem;
+    text-align: center;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .dm-review-form__upload:hover {
+    border-color: rgba(158, 58, 102, 0.55);
+    background: #fff;
+  }
+
+  .dm-review-form__file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+    opacity: 0;
+  }
+
+  .dm-review-form__upload-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b6066;
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .dm-review-form__upload-inner svg {
+    color: #9e3a66;
+  }
+
+  .dm-review-form__upload-hint {
+    margin: 0.5rem 0 0;
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: #93898e;
+    text-align: center;
+  }
+
+  .dm-review-form__upload-root.is-preview .dm-review-form__upload-placeholder {
+    display: none !important;
+  }
+
+  .dm-review-form__thumb-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0.35rem 0;
+  }
+
+  .dm-review-form__thumb-wrap[hidden] {
+    display: none !important;
+  }
+
+  .dm-review-form__preview-img {
+    display: block;
+    max-height: 200px;
+    width: auto;
+    max-width: 100%;
+    border-radius: 12px;
+    object-fit: contain;
+    background: rgba(31, 23, 21, 0.04);
+  }
+
+  .dm-review-form__thumb-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
+    justify-content: center;
+    margin-top: 0.65rem;
+  }
+
+  .dm-review-form__thumb-actions[hidden] {
+    display: none !important;
+  }
+
+  .dm-review-form__thumb-btn {
+    padding: 0.45rem 1rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1px solid transparent;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .dm-review-form__thumb-btn--ghost {
+    background: #fff;
+    border-color: rgba(158, 58, 102, 0.35);
+    color: #9e3a66;
+  }
+
+  .dm-review-form__thumb-btn--ghost:hover {
+    border-color: rgba(158, 58, 102, 0.55);
+    background: rgba(253, 248, 250, 0.9);
+  }
+
+  .dm-review-form__thumb-btn--danger {
+    background: transparent;
+    border-color: rgba(31, 23, 21, 0.15);
+    color: #6b6066;
+  }
+
+  .dm-review-form__thumb-btn--danger:hover {
+    border-color: rgba(180, 60, 60, 0.45);
+    color: #a83232;
+  }
+
+  .dm-review-form__submit-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+
+  .dm-review-form__submit {
+    min-width: 12rem;
+    padding: 0.75rem 1.75rem;
+    border: none;
+    border-radius: 999px;
+    background: #cf91ad;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s ease;
+  }
+
+  .dm-review-form__submit:hover {
+    background: #b87a96;
+  }
+
+  /* Masonry */
+  .dm-product-reviews__masonry {
+    column-count: 1;
+    column-gap: 1.25rem;
+  }
+
+  @media screen and (min-width: 750px) {
+    .dm-product-reviews__masonry {
+      column-count: 2;
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .dm-product-reviews__masonry {
+      column-count: 4;
+    }
+  }
+
+  .dm-product-reviews__review-slot {
+    break-inside: avoid;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1.25rem;
+    vertical-align: top;
+  }
+
+  .dm-product-reviews__review-slot .dm-review-card {
+    margin-bottom: 0;
+  }
+
+  .dm-product-reviews__masonry--collapsible:not(.is-expanded) .dm-product-reviews__review-slot--extra {
+    display: none !important;
+  }
+
+  .dm-product-reviews__read-more-row {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(0.25rem, 2vw, 1rem);
+    padding-bottom: 0.5rem;
+  }
+
+  .dm-product-reviews__read-more {
+    min-width: 10rem;
+    padding: 0.65rem 1.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(158, 58, 102, 0.35);
+    background: #fff;
+    color: #9e3a66;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .dm-product-reviews__read-more:hover {
+    background: rgba(207, 145, 173, 0.12);
+    border-color: rgba(158, 58, 102, 0.55);
+    color: #7d2e52;
+  }
+
+  /* ReviewCard */
+  .dm-review-card {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid rgba(158, 58, 102, 0.08);
+    box-shadow: 0 10px 32px rgba(31, 23, 21, 0.05);
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .dm-review-card__media {
+    position: relative;
+    margin: 0;
+    background: #faf5f7;
+  }
+
+  .dm-review-card__photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .dm-review-card__stars-float {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 50%);
+    z-index: 2;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(31, 23, 21, 0.12);
+    border: 1px solid rgba(158, 58, 102, 0.1);
+  }
+
+  .dm-review-card__body {
+    padding: clamp(1.1rem, 2.5vw, 1.35rem);
+    padding-top: clamp(1.35rem, 2.8vw, 1.6rem);
+  }
+
+  .dm-review-card--has-media .dm-review-card__body {
+    padding-top: clamp(1.65rem, 3vw, 2rem);
+  }
+
+  .dm-review-card__stars-inline {
+    margin-bottom: 0.65rem;
+  }
+
+  .dm-review-card__author {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .dm-review-card__avatar {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: linear-gradient(145deg, #f5dfe8, #cf91ad);
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .dm-review-card__author-text {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dm-review-card__name-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .dm-review-card__name {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: #1f1715;
+  }
+
+  .dm-review-card__verified {
+    display: inline-flex;
+    vertical-align: middle;
+  }
+
+  .dm-review-card__flag {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  .dm-review-card__text {
+    margin: 0 0 0.65rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: #3d3538;
+  }
+
+  .dm-review-card__date {
+    font-size: 0.78rem;
+    color: #93898e;
+  }
+</style>
+
+<script>
+  (function () {
+    var sid = {{ section.id | json }};
+    var readMoreLabels = {
+      more: {{ section.settings.read_more_label | default: 'Read more' | json }},
+      less: {{ section.settings.read_less_label | default: 'Show less' | json }}
+    };
+    var rootId = 'ProductReviews-' + sid;
+    var panelId = 'dm-review-form-panel-' + sid;
+    var formId = 'dm-review-contact-' + sid;
+
+    function initDmReviewsRoot(root) {
+      if (!root || root.getAttribute('data-dm-review-initialized')) return;
+      root.setAttribute('data-dm-review-initialized', 'true');
+
+      var panel = document.getElementById(panelId);
+      var openBtn = root.querySelector('.js-dm-review-open');
+      var form = document.getElementById(formId);
+
+      function openPanel() {
+        if (!panel) return;
+        panel.removeAttribute('hidden');
+        panel.classList.add('dm-review-form-wrap--open');
+        if (openBtn) openBtn.setAttribute('aria-expanded', 'true');
+        var focusEl =
+          panel.querySelector('.dm-review-form__success') ||
+          panel.querySelector('.dm-review-form__input') ||
+          panel.querySelector('.js-dm-review-body');
+        if (focusEl && typeof focusEl.focus === 'function') {
+          try {
+            focusEl.focus({ preventScroll: true });
+          } catch (err) {
+            focusEl.focus();
+          }
+        }
+        panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function closePanel() {
+        if (!panel) return;
+        panel.setAttribute('hidden', '');
+        panel.classList.remove('dm-review-form-wrap--open');
+        if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+      }
+
+      function panelShouldStartOpen() {
+        return !!(panel && (panel.querySelector('.dm-review-form__success') || panel.querySelector('.dm-review-form__errors')));
+      }
+
+      if (panelShouldStartOpen()) openPanel();
+
+      var uploadRoot = form ? form.querySelector('.js-dm-review-upload-root') : null;
+      var fileInput = form ? form.querySelector('.js-dm-review-file') : null;
+      var thumbWrap = form ? form.querySelector('.js-dm-review-thumb-wrap') : null;
+      var thumbImg = form ? form.querySelector('.js-dm-review-preview-img') : null;
+      var thumbActions = form ? form.querySelector('.js-dm-review-thumb-actions') : null;
+      var uploadPlaceholder = form ? form.querySelector('.js-dm-review-upload-placeholder') : null;
+      var previewObjectUrl = null;
+
+      function revokeReviewPhotoPreview() {
+        if (previewObjectUrl) {
+          URL.revokeObjectURL(previewObjectUrl);
+          previewObjectUrl = null;
+        }
+      }
+
+      function clearReviewPhoto() {
+        revokeReviewPhotoPreview();
+        if (fileInput) fileInput.value = '';
+        if (thumbImg) {
+          thumbImg.removeAttribute('src');
+          thumbImg.alt = '';
+        }
+        if (thumbWrap) thumbWrap.hidden = true;
+        if (thumbActions) thumbActions.hidden = true;
+        if (uploadPlaceholder) uploadPlaceholder.hidden = false;
+        if (uploadRoot) uploadRoot.classList.remove('is-preview');
+      }
+
+      if (fileInput && uploadRoot && thumbWrap && thumbImg) {
+        fileInput.addEventListener('change', function () {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) {
+            clearReviewPhoto();
+            return;
+          }
+          if (!/^image\//.test(file.type)) return;
+          revokeReviewPhotoPreview();
+          previewObjectUrl = URL.createObjectURL(file);
+          thumbImg.src = previewObjectUrl;
+          thumbImg.alt = file.name ? 'Preview: ' + file.name : 'Photo preview';
+          thumbWrap.hidden = false;
+          if (thumbActions) thumbActions.hidden = false;
+          if (uploadPlaceholder) uploadPlaceholder.hidden = true;
+          uploadRoot.classList.add('is-preview');
+        });
+      }
+
+      root.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!(t && t.closest)) return;
+        if (t.closest('.js-dm-review-remove-photo')) {
+          e.preventDefault();
+          clearReviewPhoto();
+          return;
+        }
+        if (t.closest('.js-dm-review-change-photo')) {
+          e.preventDefault();
+          if (fileInput) fileInput.click();
+          return;
+        }
+        if (t.closest('.js-dm-review-open')) {
+          e.preventDefault();
+          openPanel();
+          return;
+        }
+        if (t.closest('.js-dm-review-close')) {
+          e.preventDefault();
+          closePanel();
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape' || !panel || panel.hasAttribute('hidden')) return;
+        if (!panel.contains(document.activeElement)) return;
+        closePanel();
+        if (openBtn) openBtn.focus();
+      });
+
+      var shell = root.querySelector('.js-dm-review-shell');
+      var starWrap = root.querySelector('.js-dm-review-stars');
+      var rating = 5;
+
+      function syncStars(val) {
+        rating = val;
+        if (!starWrap) return;
+        starWrap.querySelectorAll('.dm-review-form__star-btn').forEach(function (btn, idx) {
+          var on = idx < val;
+          btn.classList.toggle('is-active', on);
+          btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+        });
+      }
+
+      if (starWrap) {
+        starWrap.querySelectorAll('.dm-review-form__star-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            syncStars(Number(btn.getAttribute('data-value')));
+          });
+        });
+      }
+
+      if (form && shell) {
+        form.addEventListener('submit', function () {
+          var body = form.querySelector('.js-dm-review-body');
+          if (!body) return;
+          var product = shell.getAttribute('data-product-title') || '';
+          var prefix = 'Product: ' + product + '\nRating: ' + rating + ' / 5 stars\n\n';
+          body.value = prefix + body.value.replace(/^\s+/, '');
+        });
+      }
+    }
+
+    function initDmProductReviewsReadMore(root) {
+      var masonry = root.querySelector('.dm-product-reviews__masonry--collapsible');
+      var btn = root.querySelector('[data-dm-pr-read-more="' + sid + '"]');
+      if (!masonry || !btn || btn.getAttribute('data-dm-pr-bound')) return;
+      btn.setAttribute('data-dm-pr-bound', 'true');
+      btn.addEventListener('click', function () {
+        var expanded = masonry.classList.toggle('is-expanded');
+        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        btn.textContent = expanded ? readMoreLabels.less : readMoreLabels.more;
+        if (expanded) masonry.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      });
+    }
+
+    function parseDmPrReviewDateMs(raw) {
+      if (raw == null || raw === '') return 0;
+      var s = String(raw).trim();
+      var m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (m) {
+        var month = parseInt(m[1], 10) - 1;
+        var day = parseInt(m[2], 10);
+        var year = parseInt(m[3], 10);
+        var d = new Date(year, month, day);
+        var t = d.getTime();
+        return isNaN(t) ? 0 : t;
+      }
+      var parsed = Date.parse(s);
+      return isNaN(parsed) ? 0 : parsed;
+    }
+
+    function dmPrApplyCollapsibleSlotClasses(masonry, initialVisible) {
+      if (!masonry || !masonry.classList.contains('dm-product-reviews__masonry--collapsible')) return;
+      var cap = Math.max(0, Number(initialVisible) || 0);
+      var slots = masonry.querySelectorAll('.dm-product-reviews__review-slot');
+      slots.forEach(function (slot, i) {
+        slot.classList.toggle('dm-product-reviews__review-slot--extra', i >= cap);
+      });
+    }
+
+    function initDmProductReviewsSort(root) {
+      var masonry = document.getElementById('dm-product-reviews-masonry-' + sid);
+      var select = root.querySelector('[data-dm-pr-sort="' + sid + '"]');
+      if (!masonry || !select || select.getAttribute('data-dm-pr-sort-bound')) return;
+      select.setAttribute('data-dm-pr-sort-bound', 'true');
+      var initialVisible = Number(root.getAttribute('data-dm-pr-initial-visible'));
+      if (!initialVisible || initialVisible < 1) initialVisible = 12;
+
+      function slotRating(el) {
+        var n = Number(el.getAttribute('data-dm-pr-rating'));
+        return isNaN(n) ? 0 : n;
+      }
+
+      function slotOrder(el) {
+        var n = Number(el.getAttribute('data-dm-pr-order'));
+        return isNaN(n) ? 0 : n;
+      }
+
+      function slotDateMs(el) {
+        return parseDmPrReviewDateMs(el.getAttribute('data-dm-pr-date'));
+      }
+
+      function sortSlots(mode) {
+        var slots = Array.prototype.slice.call(masonry.querySelectorAll('.dm-product-reviews__review-slot'));
+        slots.sort(function (a, b) {
+          var oa = slotOrder(a);
+          var ob = slotOrder(b);
+          var ra = slotRating(a);
+          var rb = slotRating(b);
+          var da = slotDateMs(a);
+          var db = slotDateMs(b);
+          if (mode === 'theme') return oa - ob;
+          if (mode === 'newest') {
+            if (db !== da) return db - da;
+            return oa - ob;
+          }
+          if (mode === 'oldest') {
+            if (da !== db) return da - db;
+            return oa - ob;
+          }
+          if (mode === 'highest') {
+            if (rb !== ra) return rb - ra;
+            if (db !== da) return db - da;
+            return oa - ob;
+          }
+          if (mode === 'lowest') {
+            if (ra !== rb) return ra - rb;
+            if (da !== db) return da - db;
+            return oa - ob;
+          }
+          return oa - ob;
+        });
+        slots.forEach(function (slot) {
+          masonry.appendChild(slot);
+        });
+        dmPrApplyCollapsibleSlotClasses(masonry, initialVisible);
+      }
+
+      select.addEventListener('change', function () {
+        sortSlots(select.value || 'theme');
+      });
+    }
+
+    function boot() {
+      var root = document.getElementById(rootId);
+      if (root) {
+        initDmReviewsRoot(root);
+        initDmProductReviewsSort(root);
+        initDmProductReviewsReadMore(root);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+
+    document.addEventListener('shopify:section:load', boot);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "DM Product reviews",
+  "tag": "section",
+  "class": "dm-section",
+  "max_blocks": 36,
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#fdf8fa"
+    },
+    {
+      "type": "text",
+      "id": "section_heading",
+      "label": "Section heading",
+      "default": "Customer reviews"
+    },
+    {
+      "type": "text",
+      "id": "product_title",
+      "label": "Product name",
+      "default": "HANA Collagen Night Wrapping Mask"
+    },
+    {
+      "type": "text",
+      "id": "average_rating",
+      "label": "Average rating (display & stars)",
+      "default": "4.9",
+      "info": "Used for the large number and star fill width."
+    },
+    {
+      "type": "text",
+      "id": "total_reviews_label",
+      "label": "Total reviews label",
+      "default": "20 reviews"
+    },
+    {
+      "type": "range",
+      "id": "star_count_5",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "label": "5-star reviews count",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "star_count_4",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "label": "4-star reviews count",
+      "default": 2
+    },
+    {
+      "type": "range",
+      "id": "star_count_3",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "label": "3-star reviews count",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "star_count_2",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "label": "2-star reviews count",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "star_count_1",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "label": "1-star reviews count",
+      "default": 0
+    },
+    {
+      "type": "textarea",
+      "id": "thumbnail_assets",
+      "label": "Thumbnail image filenames",
+      "info": "Comma-separated theme asset filenames (from Assets folder). Falls back to default HANA review shots when empty.",
+      "default": "hana-review-01-valentina-r.webp,hana-review-02-valentina-r.png,hana-review-03-antonia-guerrero.png,hana-review-04-constanza-a.png,hana-review-05-constanza-a.png,hana-review-06-macarena-f.png,hana-review-07-macarena-f.png,hana-review-08-javiera-c.png,hana-review-09-isidora-p.png,hana-review-10-isidora-p.png"
+    },
+    {
+      "type": "text",
+      "id": "write_review_label",
+      "label": "Write review button label",
+      "default": "Write a review"
+    },
+    {
+      "type": "url",
+      "id": "write_review_link",
+      "label": "Write review link",
+      "info": "Leave empty to open the inline review form (submits via store contact form)."
+    },
+    {
+      "type": "text",
+      "id": "sort_label",
+      "label": "Sort control label",
+      "default": "Sort reviews"
+    },
+    {
+      "type": "text",
+      "id": "sort_option_theme",
+      "label": "Sort option: default order",
+      "default": "Default order"
+    },
+    {
+      "type": "text",
+      "id": "sort_option_newest",
+      "label": "Sort option: newest",
+      "default": "Newest first"
+    },
+    {
+      "type": "text",
+      "id": "sort_option_oldest",
+      "label": "Sort option: oldest",
+      "default": "Oldest first"
+    },
+    {
+      "type": "text",
+      "id": "sort_option_highest",
+      "label": "Sort option: highest rating",
+      "default": "Highest rating"
+    },
+    {
+      "type": "text",
+      "id": "sort_option_lowest",
+      "label": "Sort option: lowest rating",
+      "default": "Lowest rating"
+    },
+    {
+      "type": "range",
+      "id": "reviews_initial_visible",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "label": "Reviews shown before Read more",
+      "default": 12,
+      "info": "Uses CSS to hide extra review cards until shoppers tap Read more."
+    },
+    {
+      "type": "text",
+      "id": "read_more_label",
+      "label": "Read more button",
+      "default": "Read more"
+    },
+    {
+      "type": "text",
+      "id": "read_less_label",
+      "label": "Show less button",
+      "default": "Show less"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        {
+          "type": "text",
+          "id": "customer_name",
+          "label": "Customer name",
+          "default": "Customer"
+        },
+        {
+          "type": "text",
+          "id": "customer_initial",
+          "label": "Avatar initial",
+          "default": "C"
+        },
+        {
+          "type": "text",
+          "id": "country_emoji",
+          "label": "Country flag emoji",
+          "default": "🇺🇸"
+        },
+        {
+          "type": "range",
+          "id": "rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "label": "Star rating",
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "review_body",
+          "label": "Review text",
+          "default": "Great product and fast delivery."
+        },
+        {
+          "type": "text",
+          "id": "review_date",
+          "label": "Review date",
+          "default": "01/01/2026"
+        },
+        {
+          "type": "text",
+          "id": "image_asset",
+          "label": "Card photo asset filename",
+          "info": "Theme asset filename from Assets (e.g. hana-review-01-valentina-r.webp). Enter none for text-only.",
+          "default": "none"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "DM Product reviews",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Vanessa R.",
+            "customer_initial": "V",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "It arrived in 2 days and I used it the same night. The next morning my skin felt softer and more hydrated than expected.",
+            "review_date": "02/18/2026",
+            "image_asset": "hana-review-01-valentina-r.webp"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Ashley G.",
+            "customer_initial": "A",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I will keep buying it. The product leaves my skin feeling smooth, clean, and fresh.",
+            "review_date": "02/10/2026",
+            "image_asset": "hana-review-03-antonia-guerrero.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Chloe A.",
+            "customer_initial": "C",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I had doubts at first, but I am happy I bought it. My skin feels softer and more comfortable.",
+            "review_date": "01/30/2026",
+            "image_asset": "hana-review-04-constanza-a.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Megan F.",
+            "customer_initial": "M",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I have very reactive skin and nothing happened. That already says a lot for me.",
+            "review_date": "12/30/2025",
+            "image_asset": "hana-review-07-macarena-f.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Ivy P.",
+            "customer_initial": "I",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I usually do not write reviews, but this one deserves it. I can really notice the difference.",
+            "review_date": "12/21/2025",
+            "image_asset": "hana-review-09-isidora-p.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Julia C.",
+            "customer_initial": "J",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I bought the 2-for-1 offer and kept using it because of the results. My skin feels fresh every morning.",
+            "review_date": "12/21/2025",
+            "image_asset": "hana-review-08-javiera-c.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Claire S.",
+            "customer_initial": "C",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "It arrived well packaged and earlier than expected. The mask feels nice and my skin looks more refreshed.",
+            "review_date": "10/02/2025",
+            "image_asset": "hana-review-16-camila-s.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Fiona L.",
+            "customer_initial": "F",
+            "country_emoji": "🇺🇸",
+            "rating": 4,
+            "review_body": "I ordered it on Thursday and received it on Saturday. After the first night, my skin felt much softer.",
+            "review_date": "08/18/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Rachel A.",
+            "customer_initial": "R",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I ordered it on Friday and received it on Monday. After using it, my skin felt different and much softer.",
+            "review_date": "09/24/2025",
+            "image_asset": "hana-review-15-rocio-a.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Dana M.",
+            "customer_initial": "D",
+            "country_emoji": "🇺🇸",
+            "rating": 4,
+            "review_body": "I do not usually write reviews, but this product works for my routine and arrived fast.",
+            "review_date": "09/11/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Paige G.",
+            "customer_initial": "P",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "My mom liked it so much that I had to order another one. We both love it.",
+            "review_date": "07/29/2025",
+            "image_asset": "hana-review-20-paula-g.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Kate M.",
+            "customer_initial": "K",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "At first I was unsure about sleeping with something on my face, but now I do not want to skip it.",
+            "review_date": "05/26/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Brooke V.",
+            "customer_initial": "B",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "It arrived quickly and in good condition. The product does what I expected, and I already ordered another one for my mom.",
+            "review_date": "07/26/2025",
+            "image_asset": "hana-review-11-macarena-f.webp"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Allison R.",
+            "customer_initial": "A",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I use it every night now. It became part of my routine, and I would not change it for anything.",
+            "review_date": "07/17/2025",
+            "image_asset": "hana-review-12-macarena-f.webp"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Rebecca V.",
+            "customer_initial": "R",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I already ordered my second batch. That says everything. My skin feels fresh and soft when I wake up.",
+            "review_date": "06/06/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Piper G.",
+            "customer_initial": "P",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "My mom took mine, so I had to order another one. We are both hooked on it.",
+            "review_date": "07/11/2025",
+            "image_asset": "hana-review-19-paula-g.webp"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Courtney A.",
+            "customer_initial": "C",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I had doubts because of my age, but I am glad I bought it. My skin looks better and feels more hydrated.",
+            "review_date": "07/20/2025",
+            "image_asset": "none"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Carly S.",
+            "customer_initial": "C",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I am 51 and did not expect much, but I was wrong. My skin feels better than it has in years.",
+            "review_date": "08/16/2025",
+            "image_asset": "hana-review-17-camila-s.png"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Anna R.",
+            "customer_initial": "A",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "It arrived very fast. I used it that night, and the first thing I did in the morning was touch my face. It felt so soft.",
+            "review_date": "07/16/2025",
+            "image_asset": "hana-review-13-macarena-f.webp"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "customer_name": "Faith L.",
+            "customer_initial": "F",
+            "country_emoji": "🇺🇸",
+            "rating": 5,
+            "review_body": "I have been using it for 2 months and already ordered the second round. That speaks for itself.",
+            "review_date": "05/08/2025",
+            "image_asset": "hana-review-18-isidora-p.webp"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
