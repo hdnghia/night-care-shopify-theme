@@ -211,6 +211,12 @@
                       </div>
                       <div class="flex flex-col gap-y-3 px-2 pt-10">
                         {%- for link in section.settings.menu_menu.links -%}
+                          {% liquid
+                            assign dm_link_title = link.title | strip | downcase
+                            if dm_link_title == 'catalog'
+                              continue
+                            endif
+                          %}
                           <div class=" p-3 rounded-sm">
                             <a
                               href="{{ link.url }}"
@@ -272,6 +278,12 @@
               <!-- Desktop Menu -->
               <ul class="dm-hidden sm:flex  items-center gap-x-6 flex flex-row" role="list">
                 {%- for link in section.settings.menu_menu.links -%}
+                  {% liquid
+                    assign dm_link_title = link.title | strip | downcase
+                    if dm_link_title == 'catalog'
+                      continue
+                    endif
+                  %}
                   <li>
                     <a
                       id="{{ link.handle }}"

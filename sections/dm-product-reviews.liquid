@@ -1050,6 +1050,7 @@
       }
 
       if (starWrap) {
+        syncStars(rating);
         starWrap.querySelectorAll('.dm-review-form__star-btn').forEach(function (btn) {
           btn.addEventListener('click', function () {
             syncStars(Number(btn.getAttribute('data-value')));

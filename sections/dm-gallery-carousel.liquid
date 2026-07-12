@@ -1,6 +1,5 @@
 {% comment %}
-  DM Gallery carousel — full-width, centered container, responsive slides per view (1 / 2 / 3).
-  Carousel uses vanilla JS (currentSlideStart + render).
+  DM Gallery carousel — native horizontal scroll with snap points.
 {% endcomment %}
 {% liquid
   assign dm_pgc_has_slide = false
@@ -43,16 +42,34 @@
       </button>
 
       <div class="dm-pgc__viewport">
-        <div class="dm-pgc__slots" data-dm-pgc-slots="{{ section.id }}">
-          <div class="dm-pgc__slot" data-slot-index="0">
-            <img alt="" width="800" height="800" loading="lazy" decoding="async">
-          </div>
-          <div class="dm-pgc__slot" data-slot-index="1">
-            <img alt="" width="800" height="800" loading="lazy" decoding="async">
-          </div>
-          <div class="dm-pgc__slot" data-slot-index="2">
-            <img alt="" width="800" height="800" loading="lazy" decoding="async">
-          </div>
+        <div class="dm-pgc__track" data-dm-pgc-track="{{ section.id }}">
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'slide' -%}
+              {%- liquid
+                assign dm_u = ''
+                if block.settings.image != blank
+                  assign dm_u = block.settings.image | image_url: width: 1400
+                elsif block.settings.asset_file != blank
+                  assign dm_af2 = block.settings.asset_file | strip
+                  if dm_af2 != blank
+                    assign dm_u = dm_af2 | asset_url
+                  endif
+                endif
+              -%}
+              {%- if dm_u != blank -%}
+                <div class="dm-pgc__slide" {{ block.shopify_attributes }}>
+                  <img
+                    src="{{ dm_u }}"
+                    alt="{{ block.settings.alt | default: '' | escape }}"
+                    width="700"
+                    height="620"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                </div>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
         </div>
       </div>
 
@@ -69,131 +86,134 @@
     </div>
   </div>
 
-  <script type="application/json" class="dm-pgc__data">
-    {% assign dm_pgc_first = true %}
-    [
-      {%- for block in section.blocks -%}
-        {%- if block.type == 'slide' -%}
-          {%- liquid
-            assign dm_u = ''
-            if block.settings.image != blank
-              assign dm_u = block.settings.image | image_url: width: 2400
-            elsif block.settings.asset_file != blank
-              assign dm_af2 = block.settings.asset_file | strip
-              if dm_af2 != blank
-                assign dm_u = dm_af2 | asset_url
-              endif
-            endif
-          -%}
-          {%- if dm_u != blank -%}
-            {%- unless dm_pgc_first -%},{%- endunless -%}
-            {"src":{{ dm_u | json }},"alt":{{ block.settings.alt | default: '' | json }}}
-            {%- assign dm_pgc_first = false -%}
-          {%- endif -%}
-        {%- endif -%}
-      {%- endfor -%}
-    ]
-  </script>
 </section>
 
 <style>
   .dm-product-gallery-carousel {
     width: 100%;
     margin: 0;
-    padding: clamp(2rem, 5vw, 3.25rem) max(1rem, env(safe-area-inset-left, 0px))
-      clamp(2rem, 5vw, 3.25rem) max(1rem, env(safe-area-inset-right, 0px));
+    padding: clamp(1.75rem, 4vw, 3rem) max(1rem, env(safe-area-inset-left, 0px))
+      clamp(1.75rem, 4vw, 3rem) max(1rem, env(safe-area-inset-right, 0px));
     box-sizing: border-box;
     background: var(--dm-pgc-bg, #fdf8fa);
   }
 
   .dm-pgc__inner {
-    max-width: 76rem;
+    max-width: 86rem;
     margin: 0 auto;
     box-sizing: border-box;
   }
 
   .dm-pgc__stage {
+    --dm-pgc-gap: clamp(0.85rem, 1.45vw, 1.25rem);
     position: relative;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1.75rem minmax(0, 1fr) 1.75rem;
     align-items: center;
-    gap: clamp(0.35rem, 1.5vw, 0.75rem);
+    gap: clamp(0.55rem, 1vw, 0.85rem);
   }
 
   .dm-pgc__viewport {
-    flex: 1;
     min-width: 0;
-  }
-
-  .dm-pgc__slots {
-    display: grid;
-    gap: clamp(0.65rem, 2vw, 1.1rem);
-    grid-template-columns: repeat(var(--dm-pgc-spv, 3), minmax(0, 1fr));
-    transition: gap 0.2s ease;
-  }
-
-  .dm-pgc__slot {
-    aspect-ratio: 1 / 1;
-    border-radius: 14px;
     overflow: hidden;
-    background: rgba(31, 23, 21, 0.04);
-    min-width: 0;
   }
 
-  .dm-pgc__slot--off {
+  .dm-pgc__track {
+    display: flex;
+    gap: var(--dm-pgc-gap);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scroll-padding-inline: 0;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dm-pgc__track::-webkit-scrollbar {
     display: none;
   }
 
-  .dm-pgc__slot img {
+  .dm-pgc__slide {
+    flex: 0 0 calc((100% - (var(--dm-pgc-gap) * 4)) / 5);
+    aspect-ratio: 1.08 / 1;
+    border: 1px solid rgba(31, 23, 21, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.72);
+    scroll-snap-align: start;
+    min-width: 0;
+    box-shadow: 0 10px 26px rgba(140, 55, 91, 0.06);
+  }
+
+  .dm-pgc__slide img {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: opacity 0.28s ease;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .dm-pgc__slot img {
-      transition: none;
-    }
   }
 
   .dm-pgc__nav {
-    flex-shrink: 0;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 1.75rem;
+    height: 2rem;
     padding: 0;
-    border-radius: 999px;
-    border: 1px solid rgba(31, 23, 21, 0.12);
-    background: rgba(255, 255, 255, 0.92);
-    color: #3d3538;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #b8bac0;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(31, 23, 21, 0.06);
-    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    transition: color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
     align-self: center;
   }
 
   .dm-pgc__nav:hover {
-    background: #fff;
-    border-color: rgba(158, 58, 102, 0.28);
-    color: #9e3a66;
+    background: transparent;
+    color: #8f9298;
+  }
+
+  .dm-pgc__nav[disabled] {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .dm-pgc__nav[disabled]:hover {
+    background: transparent;
+    color: #b8bac0;
   }
 
   .dm-pgc__nav:focus-visible {
     outline: none;
-    box-shadow: 0 0 0 3px rgba(158, 58, 102, 0.22);
+    box-shadow: 0 0 0 3px rgba(143, 146, 152, 0.24);
   }
 
   @media screen and (max-width: 749px) {
     .dm-pgc__stage {
+      --dm-pgc-gap: 0.8rem;
+      grid-template-columns: 1.5rem minmax(0, 1fr) 1.5rem;
       gap: 0.35rem;
     }
 
+    .dm-pgc__track {
+      scroll-padding-inline: 0.15rem;
+    }
+
+    .dm-pgc__slide {
+      flex-basis: min(78vw, 18rem);
+    }
+
     .dm-pgc__nav {
-      width: 2.25rem;
-      height: 2.25rem;
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .dm-pgc__slide {
+      flex: 0 0 calc((100% - (var(--dm-pgc-gap) * 4)) / 5) !important;
+      max-width: calc((100% - (var(--dm-pgc-gap) * 4)) / 5);
     }
   }
 </style>
@@ -203,91 +223,33 @@
     var rootId = 'dm-pgc-{{ section.id }}';
     var sid = {{ section.id | json }};
 
-    function slidesPerView() {
-      var w = window.innerWidth;
-      if (w < 750) return 1;
-      if (w < 990) return 2;
-      return 3;
-    }
-
-    function parseSlides(root) {
-      var el = root.querySelector('.dm-pgc__data');
-      if (!el || !el.textContent) return [];
-      try {
-        var data = JSON.parse(el.textContent);
-        return Array.isArray(data) ? data : [];
-      } catch (e) {
-        return [];
-      }
-    }
-
     function initDmGalleryCarousel(root) {
       if (!root || root.getAttribute('data-dm-pgc-init')) return;
-      var slides = parseSlides(root);
-      if (!slides.length) return;
+      var track = root.querySelector('[data-dm-pgc-track="' + sid + '"]');
+      var slides = track ? track.querySelectorAll('.dm-pgc__slide') : [];
+      if (!track || !slides.length) return;
       root.removeAttribute('hidden');
       root.setAttribute('data-dm-pgc-init', 'true');
 
-      var currentSlideStart = 0;
-      var slotsRoot = root.querySelector('[data-dm-pgc-slots="' + sid + '"]');
-      var slots = slotsRoot ? slotsRoot.querySelectorAll('.dm-pgc__slot') : [];
+      var prev = root.querySelector('[data-dm-pgc-prev="' + sid + '"]');
+      var next = root.querySelector('[data-dm-pgc-next="' + sid + '"]');
 
-      function normalizeStart(spv, n) {
-        currentSlideStart = ((currentSlideStart % n) + n) % n;
+      function stepSize() {
+        var firstSlide = track.querySelector('.dm-pgc__slide');
+        if (!firstSlide) return track.clientWidth;
+        var styles = window.getComputedStyle(track);
+        var gap = parseFloat(styles.columnGap || styles.gap || '0') || 0;
+        return firstSlide.getBoundingClientRect().width + gap;
       }
 
-      function applySlideImage(img, entry, useFade) {
-        if (!entry || !entry.src) return;
-        var nextSrc = entry.src;
-        var nextAlt = entry.alt || '';
-        if (img.getAttribute('src') === nextSrc && img.getAttribute('alt') === nextAlt) return;
-
-        function swap() {
-          img.src = nextSrc;
-          img.alt = nextAlt;
-          if (img.complete) {
-            img.style.opacity = '1';
-          } else {
-            img.onload = function () {
-              img.style.opacity = '1';
-            };
-          }
-        }
-
-        if (useFade && window.matchMedia && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-          img.style.opacity = '0.65';
-          requestAnimationFrame(function () {
-            swap();
-          });
-        } else {
-          swap();
-        }
-      }
-
-      function render() {
-        var spv = slidesPerView();
-        var n = slides.length;
-        normalizeStart(spv, n);
-        root.style.setProperty('--dm-pgc-spv', String(spv));
-
-        for (var i = 0; i < slots.length; i++) {
-          var cell = slots[i];
-          if (i >= spv) {
-            cell.classList.add('dm-pgc__slot--off');
-            continue;
-          }
-          cell.classList.remove('dm-pgc__slot--off');
-          var idx = (currentSlideStart + i) % n;
-          var img = cell.querySelector('img');
-          if (img) applySlideImage(img, slides[idx], true);
-        }
+      function updateButtons() {
+        var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth - 1);
+        if (prev) prev.disabled = track.scrollLeft <= 1;
+        if (next) next.disabled = track.scrollLeft >= maxScroll;
       }
 
       function go(delta) {
-        var n = slides.length;
-        if (n < 1) return;
-        currentSlideStart = (currentSlideStart + delta + n) % n;
-        render();
+        track.scrollBy({ left: stepSize() * delta, behavior: 'smooth' });
       }
 
       root.addEventListener('click', function (e) {
@@ -303,14 +265,18 @@
       });
 
       var resizeTimer;
+      track.addEventListener('scroll', function () {
+        window.requestAnimationFrame(updateButtons);
+      });
+
       window.addEventListener('resize', function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
-          render();
+          updateButtons();
         }, 120);
       });
 
-      render();
+      updateButtons();
     }
 
     function boot() {
@@ -417,7 +383,7 @@
             "asset_file": "hana-freepik_assistant_1774975760806_f73937bd-506e-49d6-a30e-596789aa2e4e.png",
             "alt": "HANA Collagen Night Wrapping Mask beauty product"
           }
-        },
+        }
       ]
     }
   ]

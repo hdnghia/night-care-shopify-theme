@@ -300,8 +300,8 @@
         "mainImageImageAspectRatio_responsive_select_mobile": "1 / 1",
         "mainImageImageStyle_select": "light",
         "mainImageImagePosition_select": "center",
-        "productImagesGalleryMediaNumberDisplayed_responsive_number_desktop": 6,
-        "productImagesGalleryMediaNumberDisplayed_responsive_number_mobile": 6,
+        "productImagesGalleryMediaNumberDisplayed_responsive_number_desktop": 5,
+        "productImagesGalleryMediaNumberDisplayed_responsive_number_mobile": 5,
         "productImagesGalleryImageImageAspectRatio_responsive_select_desktop": "1 / 1",
         "productImagesGalleryImageImageAspectRatio_responsive_select_mobile": "1 / 1",
         "productImagesGalleryImageImageStyle_select": "light",
@@ -469,6 +469,13 @@
           "settings": {
             "asset_file": "hana-freepik_assistant_1774975760806_f73937bd-506e-49d6-a30e-596789aa2e4e.png",
             "alt": "HANA Collagen Night Wrapping Mask beauty product"
+          }
+        },
+        "dmPGc5": {
+          "type": "slide",
+          "settings": {
+            "asset_file": "hana-freepik_photo-a-closeup-of-a-25yearold-caucasian-womans-face-showing-her-lips-chin-and-neck-with-her-hands-gently-touching-her-face_0001.png",
+            "alt": "Smooth hydrated skin after overnight mask care"
           }
         }
       },
