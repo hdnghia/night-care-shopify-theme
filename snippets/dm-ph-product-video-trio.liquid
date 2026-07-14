@@ -237,7 +237,6 @@
           webkit-playsinline
           x5-playsinline
           loop
-          autoplay
           preload="auto"
           disablepictureinpicture
           disableremoteplayback
@@ -255,7 +254,6 @@
           webkit-playsinline
           x5-playsinline
           loop
-          autoplay
           preload="auto"
           disablepictureinpicture
           disableremoteplayback
@@ -274,7 +272,6 @@
           webkit-playsinline
           x5-playsinline
           loop
-          autoplay
           preload="auto"
           disablepictureinpicture
           disableremoteplayback
@@ -295,7 +292,9 @@
     if (!root || !root.classList.contains('dm-ph-video-trio')) return;
 
     const videos = Array.from(root.querySelectorAll('video'));
-    const tryPlay = (video) => {
+    const isZaloBrowser = /zalo/i.test(window.navigator.userAgent || '');
+
+    const prepareVideo = (video) => {
       video.muted = true;
       video.defaultMuted = true;
       video.controls = false;
@@ -308,6 +307,10 @@
       video.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback nofullscreen');
       video.setAttribute('x-webkit-airplay', 'deny');
       if (video.readyState === 0) video.load();
+    };
+
+    const tryPlay = (video) => {
+      prepareVideo(video);
 
       const playAttempt = video.play();
       if (playAttempt && typeof playAttempt.catch === 'function') {
@@ -326,6 +329,17 @@
         }
       });
     });
+
+    if (isZaloBrowser) {
+      videos.forEach((video) => {
+        prepareVideo(video);
+        video.autoplay = false;
+        video.removeAttribute('autoplay');
+        video.preload = 'metadata';
+        video.pause();
+      });
+      return;
+    }
 
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(
@@ -348,7 +362,7 @@
       if (video) tryPlay(video);
     });
 
-    ['touchstart', 'pointerdown', 'pageshow', 'visibilitychange'].forEach((eventName) => {
+    ['pageshow', 'visibilitychange'].forEach((eventName) => {
       window.addEventListener(eventName, playVisibleVideos, { passive: true, once: eventName !== 'visibilitychange' });
     });
   })();
