@@ -361,9 +361,9 @@
         "aspect_ratio": "4 / 3",
         "show_hana_why": true,
         "hana_heading_lead": "Why everyone chooses ",
-        "hana_heading_highlight": "HANA™ Collagen Mask",
-        "hana_intro": "Wake up with skin that feels firmer, brighter, and deeply hydrated. HANA’s overnight formula helps support elasticity, smooth the look of fine lines, and lock in moisture throughout the night.",
-        "hana_banner_image_alt": "HANA collagen night mask hydration banner",
+        "hana_heading_highlight": "Night Care™ Collagen Mask",
+        "hana_intro": "Wake up with skin that feels firmer, brighter, and deeply hydrated. Night Care’s overnight formula helps support elasticity, smooth the look of fine lines, and lock in moisture throughout the night.",
+        "hana_banner_image_alt": "Night Care collagen night mask hydration banner",
         "show_how_it_works": true,
         "hiw_heading": "Why It Works"
       }
@@ -375,7 +375,7 @@
           "type": "testimonial",
           "settings": {
             "title": "My skin looked fresher in two weeks",
-            "review": "I had been looking for something simple to add to my nighttime routine. HANA made my skin feel softer, smoother, and more refreshed.",
+            "review": "I had been looking for something simple to add to my nighttime routine. Night Care made my skin feel softer, smoother, and more refreshed.",
             "customer_name": "Francisca M.",
             "location": "Santiago"
           }
@@ -411,7 +411,7 @@
           "type": "testimonial",
       "settings": {
             "title": "The missing piece in my routine",
-            "review": "I felt like my skin needed extra hydration at night. HANA became the simple step that made my routine feel complete.",
+            "review": "I felt like my skin needed extra hydration at night. Night Care became the simple step that made my routine feel complete.",
             "customer_name": "Javiera R.",
             "location": "Viña del Mar"
           }
@@ -447,28 +447,28 @@
           "type": "slide",
           "settings": {
             "asset_file": "hana-freepik_assistant_1774975623581.png",
-            "alt": "HANA Collagen Night Wrapping Mask product image"
+            "alt": "Night Care Collagen Night Wrapping Mask product image"
           }
         },
         "dmPGc2": {
           "type": "slide",
           "settings": {
             "asset_file": "hana-freepik_assistant_1774975624483.png",
-            "alt": "HANA Collagen Night Wrapping Mask with hydration effect"
+            "alt": "Night Care Collagen Night Wrapping Mask with hydration effect"
           }
         },
         "dmPGc3": {
           "type": "slide",
           "settings": {
             "asset_file": "hana-freepik_assistant_1774975626707.png",
-            "alt": "HANA Collagen Night Wrapping Mask skincare product close-up"
+            "alt": "Night Care Collagen Night Wrapping Mask skincare product close-up"
           }
         },
         "dmPGc4": {
           "type": "slide",
           "settings": {
             "asset_file": "hana-freepik_assistant_1774975760806_f73937bd-506e-49d6-a30e-596789aa2e4e.png",
-            "alt": "HANA Collagen Night Wrapping Mask beauty product"
+            "alt": "Night Care Collagen Night Wrapping Mask beauty product"
           }
         },
         "dmPGc5": {
@@ -755,7 +755,7 @@
       "settings": {
         "background_color": "#fdf8fa",
         "section_heading": "Customer reviews",
-        "product_title": "HANA Collagen Night Wrapping Mask",
+        "product_title": "Night Care Collagen Night Wrapping Mask",
         "average_rating": "4.9",
         "total_reviews_label": "20 reviews",
         "reviews_initial_visible": 12,

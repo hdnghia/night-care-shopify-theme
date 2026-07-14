@@ -173,6 +173,7 @@
     max-height: min(78vh, 640px);
     margin-left: auto;
     margin-right: auto;
+    touch-action: pan-y;
   }
 
   .dm-ph-video-trio__cell video {
@@ -181,6 +182,9 @@
     height: 100%;
     object-fit: cover;
     background: rgba(20, 8, 14, 0.35);
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .dm-ph-video-trio__fallback {
@@ -236,6 +240,9 @@
           autoplay
           preload="auto"
           disablepictureinpicture
+          disableremoteplayback
+          controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
+          x-webkit-airplay="deny"
           aria-label="Product video 1">
           <source src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}" type="video/mp4">
         </video>
@@ -251,6 +258,9 @@
           autoplay
           preload="auto"
           disablepictureinpicture
+          disableremoteplayback
+          controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
+          x-webkit-airplay="deny"
           aria-label="Product video 2">
           <source src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}" type="video/mp4">
         </video>
@@ -267,6 +277,9 @@
           autoplay
           preload="auto"
           disablepictureinpicture
+          disableremoteplayback
+          controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
+          x-webkit-airplay="deny"
           aria-label="Product video 3">
           <source src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}" type="video/mp4">
         </video>
@@ -285,10 +298,15 @@
     const tryPlay = (video) => {
       video.muted = true;
       video.defaultMuted = true;
+      video.controls = false;
+      video.disablePictureInPicture = true;
+      video.disableRemotePlayback = true;
       video.setAttribute('muted', '');
       video.setAttribute('playsinline', '');
       video.setAttribute('webkit-playsinline', '');
       video.setAttribute('x5-playsinline', '');
+      video.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback nofullscreen');
+      video.setAttribute('x-webkit-airplay', 'deny');
       if (video.readyState === 0) video.load();
 
       const playAttempt = video.play();
@@ -300,6 +318,14 @@
     };
 
     const playVisibleVideos = () => videos.forEach(tryPlay);
+
+    videos.forEach((video) => {
+      video.addEventListener('webkitbeginfullscreen', () => {
+        if (typeof video.webkitExitFullscreen === 'function') {
+          window.setTimeout(() => video.webkitExitFullscreen(), 0);
+        }
+      });
+    });
 
     if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(
