@@ -120,11 +120,8 @@
             assign goal = settings.cart_progress_threshold | times: goal_multiplier
             assign goal_progress = goal_max_reference | divided_by: goal | times: 100.0
 
-            assign goal_reached = false
-            if goal_progress >= 100.00
-              assign goal_reached = true
-              assign goal_progress = 100
-            endif
+            assign goal_reached = true
+            assign goal_progress = 100
           %}
 
           {% capture goal_difference_html %}

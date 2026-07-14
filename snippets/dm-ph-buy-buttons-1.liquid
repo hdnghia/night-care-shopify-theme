@@ -126,28 +126,207 @@
     margin-left: 0 !important;
   }
 
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: 1024px) {
     .dm-ph-buy-buttons-1 .dm-offer-card__main {
-      gap: 4px !important;
-      grid-template-columns: 54px minmax(0, 1fr) !important;
-    }
-
-    .dm-ph-buy-buttons-1 .dm-offer-card__media {
-      min-width: 54px !important;
-      justify-content: flex-end !important;
+      grid-template-columns: 44px minmax(0, 1fr) 64px !important;
+      gap: 8px !important;
     }
 
     .dm-ph-buy-buttons-1 .dm-offer-card__media img {
-      transform: translateY(10px);
+      width: 50px !important;
+      height: 64px !important;
+      transform: none !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__topline {
+      justify-content: flex-start !important;
+      gap: 6px !important;
+      flex-wrap: nowrap !important;
+      min-width: 0 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__title {
+      flex: 0 0 auto !important;
+      font-size: 0.88rem !important;
+      white-space: nowrap !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__save {
+      padding: 5px 6px !important;
+      font-size: 0.58rem !important;
+      white-space: nowrap !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__price {
+      min-width: 64px !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__price strong {
+      font-size: 1.05rem !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__price s {
+      font-size: 0.78rem !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__unit {
+      font-size: 0.8rem !important;
+      line-height: 1.25 !important;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .dm-ph-buy-buttons-1 .dm-offer-stack {
+      gap: 14px !important;
+      margin-top: 12px !important;
+      width: calc(100vw - 24px) !important;
+      max-width: none !important;
+      margin-left: calc(50% - 50vw + 12px) !important;
+      margin-right: calc(50% - 50vw + 12px) !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card {
+      min-height: 0 !important;
+      padding: 18px 16px 16px !important;
+      border-radius: 18px !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card--popular,
+    .dm-ph-buy-buttons-1 .dm-offer-card--best {
+      padding-top: 28px !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__ribbon {
+      top: -1px !important;
+      right: 20px !important;
+      min-width: 108px !important;
+      padding: 8px 12px !important;
+      border-radius: 0 0 7px 7px !important;
+      font-size: 0.72rem !important;
+      line-height: 1 !important;
+      text-align: center !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__ribbon::before,
+    .dm-ph-buy-buttons-1 .dm-offer-card__ribbon::after {
+      display: block !important;
+      width: 12px !important;
+      height: 14px !important;
+      background: #9f2d29 !important;
+      top: 0 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__ribbon::before {
+      left: -12px !important;
+      clip-path: polygon(100% 0, 100% 100%, 0 100%) !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__ribbon::after {
+      right: -12px !important;
+      clip-path: polygon(0 0, 100% 100%, 0 100%) !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__main {
+      display: grid !important;
+      grid-template-columns: 42px minmax(0, 1fr) 58px !important;
+      grid-template-rows: auto !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__media {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+      min-width: 42px !important;
+      min-height: 68px !important;
+      justify-content: center !important;
+      align-items: center !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__media img {
+      width: 46px !important;
+      height: 62px !important;
+      transform: none !important;
     }
 
     .dm-ph-buy-buttons-1 .dm-offer-card__body {
-      margin-left: -2px !important;
-      margin-top: 5px !important;
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      gap: 6px !important;
+      margin: 0 !important;
+      padding-left: 0 !important;
     }
 
     .dm-ph-buy-buttons-1 .dm-offer-card__topline {
       margin-top: 0 !important;
+      align-items: center !important;
+      gap: 6px !important;
+      flex-wrap: nowrap !important;
+      min-width: 0 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__title {
+      width: auto !important;
+      flex: 0 0 auto !important;
+      min-width: 0 !important;
+      font-size: 0.82rem !important;
+      font-weight: 700 !important;
+      line-height: 1.18 !important;
+      white-space: nowrap !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__save {
+      flex: 0 0 auto !important;
+      padding: 4px 5px !important;
+      border-radius: 999px !important;
+      font-size: 0.5rem !important;
+      white-space: nowrap !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__unit {
+      font-size: 0.76rem !important;
+      font-weight: 700 !important;
+      line-height: 1.25 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__price {
+      grid-column: 3 !important;
+      grid-row: 1 !important;
+      align-self: center !important;
+      justify-self: end !important;
+      min-width: 58px !important;
+      gap: 6px !important;
+      margin: 0 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__price strong {
+      font-size: 1rem !important;
+      font-weight: 600 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__price s {
+      font-size: 0.72rem !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__spec-footer {
+      margin-top: 12px !important;
+      padding-left: 0 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__spec-lines {
+      gap: 5px !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__spec-line,
+    .dm-ph-buy-buttons-1 .dm-offer-card__spec-ship {
+      gap: 6px !important;
+      font-size: 0.76rem !important;
+      line-height: 1.3 !important;
+    }
+
+    .dm-ph-buy-buttons-1 .dm-offer-card__spec-icon-check {
+      width: 13px !important;
+      height: 13px !important;
     }
   }
 

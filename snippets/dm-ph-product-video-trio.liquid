@@ -180,6 +180,28 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    background: rgba(20, 8, 14, 0.35);
+  }
+
+  .dm-ph-video-trio__fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-align: center;
+    background: rgba(20, 8, 14, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+  }
+
+  .dm-ph-video-trio__cell.is-waiting-for-tap .dm-ph-video-trio__fallback {
+    opacity: 1;
+    pointer-events: auto;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -205,37 +227,103 @@
     <div class="dm-ph-video-trio__grid">
       <div class="dm-ph-video-trio__cell">
         <video
-          src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}"
           muted
+          defaultmuted
           playsinline
+          webkit-playsinline
+          x5-playsinline
           loop
           autoplay
-          preload="metadata"
+          preload="auto"
           disablepictureinpicture
-          aria-label="Product video 1"></video>
+          aria-label="Product video 1">
+          <source src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}" type="video/mp4">
+        </video>
       </div>
       <div class="dm-ph-video-trio__cell">
         <video
-          src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}"
           muted
+          defaultmuted
           playsinline
+          webkit-playsinline
+          x5-playsinline
           loop
           autoplay
-          preload="metadata"
+          preload="auto"
           disablepictureinpicture
-          aria-label="Product video 2"></video>
+          aria-label="Product video 2">
+          <source src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}" type="video/mp4">
+        </video>
+        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 2">Tap to play</button>
       </div>
       <div class="dm-ph-video-trio__cell">
         <video
-          src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}"
           muted
+          defaultmuted
           playsinline
+          webkit-playsinline
+          x5-playsinline
           loop
           autoplay
-          preload="metadata"
+          preload="auto"
           disablepictureinpicture
-          aria-label="Product video 3"></video>
+          aria-label="Product video 3">
+          <source src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}" type="video/mp4">
+        </video>
+        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 3">Tap to play</button>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  (() => {
+    const root = document.currentScript.previousElementSibling;
+    if (!root || !root.classList.contains('dm-ph-video-trio')) return;
+
+    const videos = Array.from(root.querySelectorAll('video'));
+    const tryPlay = (video) => {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('webkit-playsinline', '');
+      video.setAttribute('x5-playsinline', '');
+      if (video.readyState === 0) video.load();
+
+      const playAttempt = video.play();
+      if (playAttempt && typeof playAttempt.catch === 'function') {
+        playAttempt
+          .then(() => video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-waiting-for-tap'))
+          .catch(() => video.closest('.dm-ph-video-trio__cell')?.classList.add('is-waiting-for-tap'));
+      }
+    };
+
+    const playVisibleVideos = () => videos.forEach(tryPlay);
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) tryPlay(entry.target);
+          });
+        },
+        { rootMargin: '160px 0px' }
+      );
+      videos.forEach((video) => observer.observe(video));
+    } else {
+      playVisibleVideos();
+    }
+
+    root.addEventListener('click', (event) => {
+      const button = event.target.closest('.dm-ph-video-trio__fallback');
+      if (!button) return;
+      const video = button.closest('.dm-ph-video-trio__cell')?.querySelector('video');
+      if (video) tryPlay(video);
+    });
+
+    ['touchstart', 'pointerdown', 'pageshow', 'visibilitychange'].forEach((eventName) => {
+      window.addEventListener(eventName, playVisibleVideos, { passive: true, once: eventName !== 'visibilitychange' });
+    });
+  })();
+</script>
