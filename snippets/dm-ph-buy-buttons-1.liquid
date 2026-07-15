@@ -542,9 +542,7 @@
                     assign bundle_savings = bundle_compare | minus: bundle_price
                     assign card_class = 'dm-offer-card'
                     assign offer_checked = false
-                    if offer_variant.id == current_variant.id
-                      assign offer_checked = true
-                    elsif has_bundle_variants == false and bundle_quantity == 4
+                    if bundle_quantity == 4
                       assign offer_checked = true
                     endif
                     if bundle_quantity == 4
