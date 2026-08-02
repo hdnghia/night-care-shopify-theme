@@ -3,6 +3,7 @@
 {% endcomment %}
 {% liquid
   assign dm_pgc_has_slide = false
+  assign dm_pgc_slide_count = 0
   for block in section.blocks
     if block.type == 'slide'
       assign dm_pgc_slide_src = ''
@@ -16,6 +17,7 @@
       endif
       if dm_pgc_slide_src != blank
         assign dm_pgc_has_slide = true
+        assign dm_pgc_slide_count = dm_pgc_slide_count | plus: 1
       endif
     endif
   endfor
@@ -42,7 +44,10 @@
       </button>
 
       <div class="dm-pgc__viewport">
-        <div class="dm-pgc__track" data-dm-pgc-track="{{ section.id }}">
+        <div
+          class="dm-pgc__track{% if dm_pgc_slide_count <= 5 %} dm-pgc__track--center{% endif %}"
+          data-dm-pgc-track="{{ section.id }}"
+        >
           {%- for block in section.blocks -%}
             {%- if block.type == 'slide' -%}
               {%- liquid
@@ -211,6 +216,10 @@
   }
 
   @media screen and (min-width: 750px) {
+    .dm-pgc__track--center {
+      justify-content: center;
+    }
+
     .dm-pgc__slide {
       flex: 0 0 calc((100% - (var(--dm-pgc-gap) * 4)) / 5) !important;
       max-width: calc((100% - (var(--dm-pgc-gap) * 4)) / 5);
