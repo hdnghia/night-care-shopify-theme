@@ -5117,6 +5117,9 @@ product-recommendations:has([data-has-recommendations='false']) {
   grid-template: 1fr / 1fr;
   overflow: hidden;
   cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .dm-before-after__layer {
@@ -5209,6 +5212,7 @@ product-recommendations:has([data-has-recommendations='false']) {
   opacity: 0;
   cursor: ew-resize;
   appearance: none;
+  touch-action: pan-y;
 }
 
 .dm-before-after__range::-webkit-slider-thumb,

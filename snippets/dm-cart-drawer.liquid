@@ -184,15 +184,40 @@
                         <div class='flex gap-3'>
                           {%- comment -%} IMAGE {%- endcomment -%}
                           <div class='shrink-0'>
-                            {% if item.image %}
+                            {% liquid
+                              assign cart_item_image = item.image
+                              assign cart_item_bundle_asset = ''
+                              assign cart_item_bundle_image_style = 'width: 80px; height: 80px; object-fit: contain;'
+                              if item.variant.title contains 'Buy 3 Get 2 Free'
+                                assign cart_item_bundle_asset = 'dm-bundle-pack-5.png'
+                              elsif item.variant.title contains 'Buy 2 Get 1 Free'
+                                assign cart_item_bundle_asset = 'dm-bundle-pack-3.png'
+                              elsif item.variant.title contains 'Buy 1'
+                                assign cart_item_bundle_asset = 'dm-bundle-pack-1.png'
+                                assign cart_item_bundle_image_style = 'width: 80px; height: 80px; object-fit: contain; padding: 7px;'
+                              endif
+                            %}
+                            {% if cart_item_bundle_asset != blank %}
+                              <a href='{{ item.url }}' class='block' tabindex='-1' aria-hidden='true'>
+                                <img
+                                  class='rounded-xs shadow-sm'
+                                  style='{{ cart_item_bundle_image_style }}'
+                                  src='{{ cart_item_bundle_asset | asset_url }}'
+                                  alt='{{ item.product.title | escape }}'
+                                  loading='lazy'
+                                  width='80'
+                                  height='80'
+                                >
+                              </a>
+                            {% elsif cart_item_image %}
                               <a href='{{ item.url }}' class='block' tabindex='-1' aria-hidden='true'>
                                 <img
                                   class='h-auto w-[80px] rounded-xs object-cover shadow-sm'
-                                  src='{{ item.image | image_url: width: 300 }}'
-                                  alt='{{ item.image.alt | escape }}'
+                                  src='{{ cart_item_image | image_url: width: 300 }}'
+                                  alt='{{ cart_item_image.alt | escape }}'
                                   loading='lazy'
                                   width='80'
-                                  height='{{ 80 | divided_by: item.image.aspect_ratio | ceil }}'
+                                  height='{{ 80 | divided_by: cart_item_image.aspect_ratio | ceil }}'
                                 >
                               </a>
                             {% endif %}
@@ -214,11 +239,20 @@
                                 {% liquid
                                   assign display_compare = false
                                   assign compare_price = 0
+                                  assign bundle_compare_price = 0
                                   for variant in item.product.variants
                                     if variant.id == item.id
                                       assign current_variant = variant
                                     endif
                                   endfor
+
+                                  if item.variant.title contains 'Buy 3 Get 2 Free'
+                                    assign bundle_compare_price = 13995 | times: item.quantity
+                                  elsif item.variant.title contains 'Buy 2 Get 1 Free'
+                                    assign bundle_compare_price = 8397 | times: item.quantity
+                                  elsif item.variant.title contains 'Buy 1'
+                                    assign bundle_compare_price = 5598 | times: item.quantity
+                                  endif
 
                                   if settings.cart_displayed_compare_prices == 'automatic'
                                     if item.original_line_price != item.final_line_price
@@ -234,6 +268,11 @@
                                   elsif item.original_line_price != item.final_line_price
                                     assign display_compare = true
                                     assign compare_price = item.original_line_price
+                                  endif
+
+                                  if bundle_compare_price > item.final_line_price
+                                    assign display_compare = true
+                                    assign compare_price = bundle_compare_price
                                   endif
                                 %}
 
@@ -435,12 +474,24 @@
               {% assign compare_total = 0 %}
               {% assign real_total = 0 %}
               {% for item in cart.items %}
-                {% if item.variant.compare_at_price and item.variant.compare_at_price > 0 %}
+                {% assign bundle_compare_price = 0 %}
+                {% if item.variant.title contains 'Buy 3 Get 2 Free' %}
+                  {% assign bundle_compare_price = 13995 | times: item.quantity %}
+                {% elsif item.variant.title contains 'Buy 2 Get 1 Free' %}
+                  {% assign bundle_compare_price = 8397 | times: item.quantity %}
+                {% elsif item.variant.title contains 'Buy 1' %}
+                  {% assign bundle_compare_price = 5598 | times: item.quantity %}
+                {% endif %}
+
+                {% if bundle_compare_price > item.final_line_price %}
+                  {% assign line_compare = bundle_compare_price %}
+                {% elsif item.variant.compare_at_price and item.variant.compare_at_price > 0 %}
                   {% assign price_to_use = item.variant.compare_at_price %}
+                  {% assign line_compare = price_to_use | times: item.quantity %}
                 {% else %}
                   {% assign price_to_use = item.variant.price %}
+                  {% assign line_compare = price_to_use | times: item.quantity %}
                 {% endif %}
-                {% assign line_compare = price_to_use | times: item.quantity %}
                 {% assign compare_total = compare_total | plus: line_compare %}
                 {% assign line_real = item.final_price | times: item.quantity %}
                 {% assign real_total = real_total | plus: line_real %}

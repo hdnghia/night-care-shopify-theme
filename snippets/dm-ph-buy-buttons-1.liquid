@@ -271,9 +271,9 @@
       width: auto !important;
       flex: 0 0 auto !important;
       min-width: 0 !important;
-      font-size: 0.82rem !important;
-      font-weight: 700 !important;
-      line-height: 1.18 !important;
+      font-size: 0.88rem !important;
+      font-weight: 500 !important;
+      line-height: 1.2 !important;
       white-space: nowrap !important;
     }
 
@@ -286,8 +286,8 @@
     }
 
     .dm-ph-buy-buttons-1 .dm-offer-card__unit {
-      font-size: 0.76rem !important;
-      font-weight: 700 !important;
+      font-size: 0.8rem !important;
+      font-weight: 600 !important;
       line-height: 1.25 !important;
     }
 
@@ -512,47 +512,33 @@
                 </span>
               </div>
 
-              {%- assign bundle_quantities = '2,4,6' | split: ',' -%}
-              {%- for bundle_quantity_value in bundle_quantities -%}
+              {%- assign bundle_options = '1|Buy 1|dm-bundle-pack-1.png|2799|2799|5598|,3|Buy 2 Get 1 Free|dm-bundle-pack-3.png|2000|5999|8397|popular,5|Buy 3 Get 2 Free|dm-bundle-pack-5.png|1800|8999|13995|best' | split: ',' -%}
+              {%- for bundle_option in bundle_options -%}
                   {%- liquid
-                    assign bundle_quantity = bundle_quantity_value | plus: 0
-                    assign paid_units = bundle_quantity | divided_by: 2
+                    assign bundle_parts = bundle_option | split: '|'
+                    assign bundle_quantity = bundle_parts[0] | plus: 0
+                    assign bundle_title = bundle_parts[1]
+                    assign offer_image_asset = bundle_parts[2]
+                    assign per_unit_price = bundle_parts[3] | plus: 0
+                    assign bundle_price = bundle_parts[4] | plus: 0
+                    assign bundle_compare = bundle_parts[5] | plus: 0
+                    assign bundle_badge = bundle_parts[6]
                     assign offer_variant = current_variant
-                    assign offer_image_asset = 'dm-bundle-pack-2.png'
                     assign form_quantity = bundle_quantity
-                    assign bundle_title = 'Buy 1 Get 1 Free'
-                    assign bundle_price = unit_price | times: paid_units
-                    assign bundle_compare = unit_compare_price | times: bundle_quantity
-                    assign per_unit_price = bundle_price | divided_by: bundle_quantity
                     if has_bundle_variants
                       assign offer_variant = product.variants[forloop.index0]
                       assign form_quantity = 1
-                      assign bundle_price = offer_variant.price
-                      if offer_variant.compare_at_price
-                        assign bundle_compare = offer_variant.compare_at_price
-                      else
-                        assign bundle_compare = unit_compare_price | times: bundle_quantity
-                      endif
-                      assign per_unit_price = bundle_price | divided_by: bundle_quantity
-                    else
-                      assign bundle_price = unit_price | times: paid_units
-                      assign bundle_compare = unit_compare_price | times: bundle_quantity
-                      assign per_unit_price = bundle_price | divided_by: bundle_quantity
                     endif
                     assign bundle_savings = bundle_compare | minus: bundle_price
                     assign card_class = 'dm-offer-card'
                     assign offer_checked = false
-                    if bundle_quantity == 4
+                    if bundle_badge == 'popular'
                       assign offer_checked = true
                     endif
-                    if bundle_quantity == 4
+                    if bundle_badge == 'popular'
                       assign card_class = card_class | append: ' dm-offer-card--popular'
-                      assign bundle_title = 'Buy 2 Get 2 Free'
-                      assign offer_image_asset = 'dm-bundle-pack-4.png'
-                    elsif bundle_quantity == 6
+                    elsif bundle_badge == 'best'
                       assign card_class = card_class | append: ' dm-offer-card--best'
-                      assign bundle_title = 'Buy 3 Get 3 Free'
-                      assign offer_image_asset = 'dm-bundle-pack-6.png'
                     endif
                   -%}
                   <label class="{{ card_class }}">
@@ -564,10 +550,10 @@
                       data-variant-id="{{ offer_variant.id }}"
                       data-quantity="{{ form_quantity }}"
                       {% if offer_checked %}checked{% endif %}>
-                    {% if bundle_quantity == 4 %}
+                    {% if bundle_badge == 'popular' %}
                       <span class="dm-offer-card__ribbon">Most Popular</span>
-                    {% elsif bundle_quantity == 6 %}
-                      <span class="dm-offer-card__ribbon">Best Deal</span>
+                    {% elsif bundle_badge == 'best' %}
+                      <span class="dm-offer-card__ribbon">Best Value</span>
                     {% endif %}
                     <div class="dm-offer-card__main">
                       <span class="dm-offer-card__media" aria-hidden="true">
@@ -612,7 +598,7 @@
                             focusable="false">
                             <path d="M20 6 9 17l-5-5"/>
                           </svg>
-                          {{ bundle_quantity }}x {{ product.title | truncate: 43, '' }}
+                          {{ bundle_quantity }}x Overnight Collagen Wrapping Night Mask
                         </span>
                         <span class="dm-offer-card__spec-ship">
                           <svg
