@@ -5023,7 +5023,8 @@ product-recommendations:has([data-has-recommendations='false']) {
 .dm-before-after {
   margin-top: 40px;
   padding: 0;
-  overflow-x: clip;
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
 }
 
 .dm-before-after__inner {
@@ -5035,21 +5036,18 @@ product-recommendations:has([data-has-recommendations='false']) {
 .dm-before-after__sliders-fullbleed {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  align-items: center;
   gap: clamp(1.25rem, 3.5vw, 2.5rem);
-  width: 100vw;
-  max-width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: min(1120px, calc(100% - 32px));
+  max-width: 1120px;
+  margin: 0 auto;
   padding-inline: 0;
   box-sizing: border-box;
 }
 
 .dm-before-after__sliders-fullbleed .dm-before-after__slider {
   flex-shrink: 0;
-  border-radius: 0;
-  box-shadow: none;
-  /* Taller strips (>300px); scales up with viewport */
-  min-height: clamp(360px, 42vw, 780px);
+  width: 100%;
 }
 
 .dm-before-after__heading {
@@ -5087,17 +5085,19 @@ product-recommendations:has([data-has-recommendations='false']) {
 }
 
 .dm-before-after__slider,
-.dm-before-after__container,
-.dm-before-after__media {
+.dm-before-after__static-media {
   display: block;
   width: 100%;
 }
 
 .dm-before-after__slider {
   overflow: hidden;
-  border-radius: 18px;
-  box-shadow: 0 20px 48px rgba(31, 23, 21, 0.12);
+  border-radius: 30px;
+  background: #fff;
+  box-shadow: 0 20px 48px rgba(31, 23, 21, 0.1);
   aspect-ratio: var(--ratio);
+  contain: layout paint;
+  isolation: isolate;
 }
 
 .dm-before-after__slider--follow {
@@ -5105,38 +5105,22 @@ product-recommendations:has([data-has-recommendations='false']) {
   border-top: none;
 }
 
-.dm-before-after__container,
-.dm-before-after__media {
+.dm-before-after__static-media {
   position: relative;
   height: 100%;
-}
-
-.dm-before-after__media {
-  --compare: 50;
   display: grid;
-  grid-template: 1fr / 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   overflow: hidden;
-  cursor: ew-resize;
-  touch-action: pan-y;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
-.dm-before-after__layer {
+.dm-before-after__static-panel {
   position: relative;
-  grid-area: 1 / 1;
   width: 100%;
   height: 100%;
-  transition: clip-path var(--transition-duration, 0s) ease-in-out;
 }
 
-.dm-before-after__layer--before {
-  z-index: 2;
-  clip-path: inset(0 calc((100 - var(--compare)) * 1%) 0 0);
-}
-
-.dm-before-after__layer--after {
-  z-index: 1;
+.dm-before-after__static-panel--before {
+  border-right: 2px solid rgba(255, 255, 255, 0.92);
 }
 
 .dm-before-after__image,
@@ -5149,6 +5133,8 @@ product-recommendations:has([data-has-recommendations='false']) {
 .dm-before-after__image {
   display: block;
   object-fit: cover;
+  backface-visibility: hidden;
+  transform: translateZ(0);
 }
 
 .dm-before-after__placeholder svg {
@@ -5157,72 +5143,44 @@ product-recommendations:has([data-has-recommendations='false']) {
 
 .dm-before-after__label {
   position: absolute;
-  top: 28px;
   z-index: 4;
-  padding: 12px 18px;
-  border-radius: 6px;
-  background: #cf91ad;
-  color: #fff;
-  font-size: 0.9rem;
+  bottom: 28px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f1715;
+  box-shadow: 0 12px 24px rgba(31, 23, 21, 0.12);
+  font-size: 0.92rem;
   font-weight: 900;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
 }
 
 .dm-before-after__label--before {
-  left: 28px;
+  right: 18px;
 }
 
 .dm-before-after__label--after {
-  right: 28px;
+  left: 18px;
 }
 
-.dm-before-after__handle {
+.dm-before-after__duration {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: calc(var(--compare) * 1%);
-  z-index: 5;
-  width: 3px;
-  background: #fff;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
-.dm-before-after__handle span {
-  position: absolute;
-  top: 50%;
+  top: 32px;
   left: 50%;
-  width: 54px;
-  height: 54px;
-  border: 4px solid #2b2e3d;
-  border-radius: 999px;
   background: #fff;
-  box-shadow: 0 8px 18px rgba(31, 23, 21, 0.2);
-  transform: translate(-50%, -50%);
-}
-
-.dm-before-after__range {
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: ew-resize;
-  appearance: none;
-  touch-action: pan-y;
-}
-
-.dm-before-after__range::-webkit-slider-thumb,
-.dm-before-after__range::-moz-range-thumb {
-  width: 54px;
-  height: 54px;
-  border: 0;
-  background: transparent;
-  cursor: ew-resize;
-  appearance: none;
+  color: #dc819a;
+  z-index: 5;
+  padding: 12px 32px;
+  border-radius: 999px;
+  box-shadow: 0 12px 24px rgba(31, 23, 21, 0.12);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .dm-product-media-carousel {
@@ -5336,10 +5294,20 @@ product-recommendations:has([data-has-recommendations='false']) {
 
   .dm-before-after {
     padding: 38px 0;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
   }
 
   .dm-before-after__inner {
     padding: 0 16px;
+  }
+
+  .dm-before-after__sliders-fullbleed {
+    width: calc(100% - 24px);
+    max-width: calc(100% - 24px);
+    margin-left: auto;
+    margin-right: auto;
+    gap: 16px;
   }
 
   .dm-before-after__heading {
@@ -5347,32 +5315,29 @@ product-recommendations:has([data-has-recommendations='false']) {
   }
 
   .dm-before-after__slider {
-    border-radius: 14px;
+    border-radius: 22px;
     aspect-ratio: 4 / 3;
   }
 
   .dm-before-after__label {
-    top: 14px;
-    padding: 9px 12px;
+    bottom: 14px;
+    padding: 9px 15px;
     font-size: 0.72rem;
   }
 
   .dm-before-after__label--before {
-    left: 14px;
+    right: 8px;
   }
 
   .dm-before-after__label--after {
-    right: 14px;
+    left: 8px;
   }
 
-  .dm-before-after__handle span {
-    width: 44px;
-    height: 44px;
-    border-width: 3px;
-  }
-
-  .dm-before-after__range {
-    pointer-events: none;
+  .dm-before-after__duration {
+    top: 14px;
+    padding: 9px 18px;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
   }
 
   .dm-proof-stat {
