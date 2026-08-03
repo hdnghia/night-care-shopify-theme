@@ -343,6 +343,8 @@
           aria-hidden="true"
         >
         <video
+          data-video-src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}"
+          poster="{{ 'dm-video-poster-1.png' | asset_url }}"
           muted
           defaultmuted
           playsinline
@@ -355,7 +357,6 @@
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
           x-webkit-airplay="deny"
           aria-label="Product video 1">
-          <source data-src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}" type="video/mp4">
         </video>
         <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 1">
           <span class="dm-ph-video-trio__play-icon" aria-hidden="true">
@@ -375,6 +376,8 @@
           aria-hidden="true"
         >
         <video
+          data-video-src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}"
+          poster="{{ 'dm-video-poster-2.png' | asset_url }}"
           muted
           defaultmuted
           playsinline
@@ -387,7 +390,6 @@
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
           x-webkit-airplay="deny"
           aria-label="Product video 2">
-          <source data-src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}" type="video/mp4">
         </video>
         <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 2">
           <span class="dm-ph-video-trio__play-icon" aria-hidden="true">
@@ -407,6 +409,8 @@
           aria-hidden="true"
         >
         <video
+          data-video-src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}"
+          poster="{{ 'dm-video-poster-3.png' | asset_url }}"
           muted
           defaultmuted
           playsinline
@@ -419,7 +423,6 @@
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
           x-webkit-airplay="deny"
           aria-label="Product video 3">
-          <source data-src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}" type="video/mp4">
         </video>
         <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 3">
           <span class="dm-ph-video-trio__play-icon" aria-hidden="true">
@@ -442,9 +445,10 @@
     const isSafeVideoBrowser = isMobileViewport || /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent);
 
     const hydrateVideo = (video) => {
-      const source = video.querySelector('source[data-src]');
-      if (!source || source.getAttribute('src')) return;
-      source.setAttribute('src', source.dataset.src || '');
+      if (video.getAttribute('src')) return;
+      const src = video.dataset.videoSrc;
+      if (!src) return;
+      video.src = src;
       video.load();
     };
 
