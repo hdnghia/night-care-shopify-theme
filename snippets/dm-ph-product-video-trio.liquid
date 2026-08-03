@@ -213,6 +213,10 @@
     pointer-events: auto;
   }
 
+  .dm-ph-video-trio.is-safe-video video:not(.is-playing) {
+    opacity: 0;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .dm-ph-video-trio__aurora,
     .dm-ph-video-trio__orb {
@@ -257,6 +261,15 @@
 </style>
 
 <section class="dm-ph-video-trio" aria-label="Product videos">
+  <script>
+    (() => {
+      const section = document.currentScript.closest('.dm-ph-video-trio');
+      const userAgent = window.navigator.userAgent || '';
+      if (section && /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent)) {
+        section.classList.add('is-safe-video');
+      }
+    })();
+  </script>
   <div class="dm-ph-video-trio__aurora" aria-hidden="true"></div>
   <div class="dm-ph-video-trio__orb dm-ph-video-trio__orb--a" aria-hidden="true"></div>
   <div class="dm-ph-video-trio__orb dm-ph-video-trio__orb--c" aria-hidden="true"></div>
@@ -279,7 +292,7 @@
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
           x-webkit-airplay="deny"
           aria-label="Product video 1">
-          <source src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}" type="video/mp4">
+          <source data-src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}" type="video/mp4">
         </video>
         <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 1">Tap to play</button>
       </div>
@@ -297,7 +310,7 @@
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
           x-webkit-airplay="deny"
           aria-label="Product video 2">
-          <source src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}" type="video/mp4">
+          <source data-src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}" type="video/mp4">
         </video>
         <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 2">Tap to play</button>
       </div>
@@ -315,7 +328,7 @@
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
           x-webkit-airplay="deny"
           aria-label="Product video 3">
-          <source src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}" type="video/mp4">
+          <source data-src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}" type="video/mp4">
         </video>
         <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 3">Tap to play</button>
       </div>
@@ -332,6 +345,13 @@
     const userAgent = window.navigator.userAgent || '';
     const isSafeVideoBrowser = /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent);
 
+    const hydrateVideo = (video) => {
+      const source = video.querySelector('source[data-src]');
+      if (!source || source.getAttribute('src')) return;
+      source.setAttribute('src', source.dataset.src || '');
+      video.load();
+    };
+
     const prepareVideo = (video, shouldLoad = true) => {
       video.muted = true;
       video.defaultMuted = true;
@@ -346,7 +366,7 @@
       video.setAttribute('x-webkit-airplay', 'deny');
       video.setAttribute('preload', 'metadata');
       video.preload = 'metadata';
-      if (shouldLoad && video.readyState === 0) video.load();
+      if (shouldLoad) hydrateVideo(video);
     };
 
     const tryPlay = (video) => {
@@ -355,8 +375,14 @@
       const playAttempt = video.play();
       if (playAttempt && typeof playAttempt.catch === 'function') {
         playAttempt
-          .then(() => video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-waiting-for-tap'))
-          .catch(() => video.closest('.dm-ph-video-trio__cell')?.classList.add('is-waiting-for-tap'));
+          .then(() => {
+            video.classList.add('is-playing');
+            video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-waiting-for-tap');
+          })
+          .catch(() => {
+            video.classList.remove('is-playing');
+            video.closest('.dm-ph-video-trio__cell')?.classList.add('is-waiting-for-tap');
+          });
       }
     };
 
@@ -388,6 +414,7 @@
               tryPlay(entry.target);
             } else {
               entry.target.pause();
+              entry.target.classList.remove('is-playing');
             }
           });
         },

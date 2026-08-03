@@ -359,7 +359,7 @@
       ],
       "settings": {
         "background": "#FFF8F5",
-        "title": "standard",
+        "title": "",
         "before_label": "Before",
         "after_label": "After",
         "slider_label": "Compare before and after images",
