@@ -5371,6 +5371,10 @@ product-recommendations:has([data-has-recommendations='false']) {
     border-width: 3px;
   }
 
+  .dm-before-after__range {
+    pointer-events: none;
+  }
+
   .dm-proof-stat {
     min-height: 132px;
     padding: 16px 12px;
