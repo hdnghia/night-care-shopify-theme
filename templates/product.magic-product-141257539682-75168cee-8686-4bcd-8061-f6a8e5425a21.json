@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "kQnD7wNPec": {
@@ -350,7 +359,7 @@
       ],
       "settings": {
         "background": "#FFF8F5",
-        "title": "Drag To See The Difference",
+        "title": "standard",
         "before_label": "Before",
         "after_label": "After",
         "slider_label": "Compare before and after images",
