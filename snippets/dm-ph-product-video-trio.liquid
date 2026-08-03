@@ -176,15 +176,40 @@
     touch-action: pan-y;
   }
 
+  .dm-ph-video-trio__poster,
   .dm-ph-video-trio__cell video {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+
+  .dm-ph-video-trio__poster {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: rgba(20, 8, 14, 0.35);
+    transition: opacity 160ms ease;
+  }
+
+  .dm-ph-video-trio__cell video {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
     background: rgba(20, 8, 14, 0.35);
     pointer-events: none;
     -webkit-user-select: none;
     user-select: none;
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+
+  .dm-ph-video-trio__cell.is-playing video {
+    opacity: 1;
+  }
+
+  .dm-ph-video-trio__cell.is-playing .dm-ph-video-trio__poster {
+    opacity: 0;
   }
 
   .dm-ph-video-trio__fallback {
@@ -194,13 +219,29 @@
     place-items: center;
     padding: 1rem;
     color: #ffffff;
-    font-size: 0.95rem;
-    font-weight: 700;
-    text-align: center;
-    background: rgba(20, 8, 14, 0.45);
+    background: linear-gradient(180deg, rgba(20, 8, 14, 0.06), rgba(20, 8, 14, 0.22));
     opacity: 0;
     pointer-events: none;
     transition: opacity 180ms ease;
+    z-index: 3;
+  }
+
+  .dm-ph-video-trio__play-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.94);
+    color: #bd5b82;
+    box-shadow: 0 14px 30px rgba(20, 8, 14, 0.22);
+  }
+
+  .dm-ph-video-trio__play-icon svg {
+    width: 28px;
+    height: 28px;
+    margin-left: 3px;
+    fill: currentColor;
   }
 
   .dm-ph-video-trio__cell.is-waiting-for-tap .dm-ph-video-trio__fallback {
@@ -213,8 +254,9 @@
     pointer-events: auto;
   }
 
-  .dm-ph-video-trio.is-safe-video video:not(.is-playing) {
+  .dm-ph-video-trio__cell.is-playing .dm-ph-video-trio__fallback {
     opacity: 0;
+    pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -257,6 +299,16 @@
       -webkit-backdrop-filter: none;
       max-height: min(72vh, 560px);
     }
+
+    .dm-ph-video-trio__play-icon {
+      width: 56px;
+      height: 56px;
+    }
+
+    .dm-ph-video-trio__play-icon svg {
+      width: 24px;
+      height: 24px;
+    }
   }
 </style>
 
@@ -280,6 +332,16 @@
   <div class="dm-ph-video-trio__inner">
     <div class="dm-ph-video-trio__grid">
       <div class="dm-ph-video-trio__cell">
+        <img
+          src="{{ 'dm-video-poster-1.png' | asset_url }}"
+          class="dm-ph-video-trio__poster"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          width="900"
+          height="900"
+          aria-hidden="true"
+        >
         <video
           muted
           defaultmuted
@@ -295,9 +357,23 @@
           aria-label="Product video 1">
           <source data-src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}" type="video/mp4">
         </video>
-        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 1">Tap to play</button>
+        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 1">
+          <span class="dm-ph-video-trio__play-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+          </span>
+        </button>
       </div>
       <div class="dm-ph-video-trio__cell">
+        <img
+          src="{{ 'dm-video-poster-2.png' | asset_url }}"
+          class="dm-ph-video-trio__poster"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          width="900"
+          height="900"
+          aria-hidden="true"
+        >
         <video
           muted
           defaultmuted
@@ -313,9 +389,23 @@
           aria-label="Product video 2">
           <source data-src="{{ '93ab5fb7-7579-46f4-a7e9-ca16782cb6f8.mp4' | asset_url }}" type="video/mp4">
         </video>
-        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 2">Tap to play</button>
+        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 2">
+          <span class="dm-ph-video-trio__play-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+          </span>
+        </button>
       </div>
       <div class="dm-ph-video-trio__cell">
+        <img
+          src="{{ 'dm-video-poster-3.png' | asset_url }}"
+          class="dm-ph-video-trio__poster"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          width="900"
+          height="900"
+          aria-hidden="true"
+        >
         <video
           muted
           defaultmuted
@@ -331,7 +421,11 @@
           aria-label="Product video 3">
           <source data-src="{{ '87376108-b3bb-44d2-87e4-999646d533f8.mp4' | asset_url }}" type="video/mp4">
         </video>
-        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 3">Tap to play</button>
+        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 3">
+          <span class="dm-ph-video-trio__play-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+          </span>
+        </button>
       </div>
     </div>
   </div>
@@ -378,10 +472,12 @@
       if (playAttempt && typeof playAttempt.catch === 'function') {
         playAttempt
           .then(() => {
+            video.closest('.dm-ph-video-trio__cell')?.classList.add('is-playing');
             video.classList.add('is-playing');
             video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-waiting-for-tap');
           })
           .catch(() => {
+            video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-playing');
             video.classList.remove('is-playing');
             video.closest('.dm-ph-video-trio__cell')?.classList.add('is-waiting-for-tap');
           });
@@ -417,6 +513,7 @@
             } else {
               entry.target.pause();
               entry.target.classList.remove('is-playing');
+              entry.target.closest('.dm-ph-video-trio__cell')?.classList.remove('is-playing');
             }
           });
         },
