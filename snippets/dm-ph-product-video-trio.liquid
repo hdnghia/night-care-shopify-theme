@@ -265,7 +265,8 @@
     (() => {
       const section = document.currentScript.closest('.dm-ph-video-trio');
       const userAgent = window.navigator.userAgent || '';
-      if (section && /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent)) {
+      const isMobileViewport = window.matchMedia?.('(max-width: 767px)').matches;
+      if (section && (isMobileViewport || /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent))) {
         section.classList.add('is-safe-video');
       }
     })();
@@ -343,7 +344,8 @@
 
     const videos = Array.from(root.querySelectorAll('video'));
     const userAgent = window.navigator.userAgent || '';
-    const isSafeVideoBrowser = /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent);
+    const isMobileViewport = window.matchMedia?.('(max-width: 767px)').matches;
+    const isSafeVideoBrowser = isMobileViewport || /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent);
 
     const hydrateVideo = (video) => {
       const source = video.querySelector('source[data-src]');
