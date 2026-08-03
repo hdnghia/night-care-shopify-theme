@@ -466,27 +466,45 @@
     };
 
     const tryPlay = (video) => {
+      const cell = video.closest('.dm-ph-video-trio__cell');
       prepareVideo(video);
 
       const playAttempt = video.play();
       if (playAttempt && typeof playAttempt.catch === 'function') {
         playAttempt
           .then(() => {
-            video.closest('.dm-ph-video-trio__cell')?.classList.add('is-playing');
+            cell?.classList.add('is-playing');
             video.classList.add('is-playing');
-            video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-waiting-for-tap');
+            cell?.classList.remove('is-waiting-for-tap');
           })
           .catch(() => {
-            video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-playing');
+            cell?.classList.remove('is-playing');
             video.classList.remove('is-playing');
-            video.closest('.dm-ph-video-trio__cell')?.classList.add('is-waiting-for-tap');
+            cell?.classList.add('is-waiting-for-tap');
           });
+      } else if (!video.paused) {
+        cell?.classList.add('is-playing');
+        video.classList.add('is-playing');
+        cell?.classList.remove('is-waiting-for-tap');
       }
     };
 
     const playVisibleVideos = () => videos.forEach(tryPlay);
 
     videos.forEach((video) => {
+      video.addEventListener('playing', () => {
+        const cell = video.closest('.dm-ph-video-trio__cell');
+        cell?.classList.add('is-playing');
+        cell?.classList.remove('is-waiting-for-tap');
+        video.classList.add('is-playing');
+      });
+
+      video.addEventListener('pause', () => {
+        if (video.ended) return;
+        video.classList.remove('is-playing');
+        video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-playing');
+      });
+
       video.addEventListener('webkitbeginfullscreen', () => {
         if (typeof video.webkitExitFullscreen === 'function') {
           window.setTimeout(() => video.webkitExitFullscreen(), 0);
@@ -529,8 +547,6 @@
       if (!button) return;
       const video = button.closest('.dm-ph-video-trio__cell')?.querySelector('video');
       if (video) {
-        root.classList.remove('is-safe-video');
-        video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-waiting-for-tap');
         tryPlay(video);
       }
     });
