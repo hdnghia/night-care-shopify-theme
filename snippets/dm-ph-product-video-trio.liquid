@@ -208,6 +208,11 @@
     pointer-events: auto;
   }
 
+  .dm-ph-video-trio.is-safe-video .dm-ph-video-trio__fallback {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .dm-ph-video-trio__aurora,
     .dm-ph-video-trio__orb {
@@ -216,6 +221,37 @@
 
     .dm-ph-video-trio__aurora {
       background-position: 50% 50%;
+    }
+  }
+
+  @media screen and (max-width: 767px) {
+    .dm-ph-video-trio {
+      contain: layout paint;
+    }
+
+    .dm-ph-video-trio__aurora,
+    .dm-ph-video-trio__orb {
+      animation: none;
+      filter: none;
+      transform: none;
+    }
+
+    .dm-ph-video-trio__aurora {
+      inset: 0;
+      background-size: 100% 100%;
+    }
+
+    .dm-ph-video-trio__orb,
+    .dm-ph-video-trio__grain {
+      display: none;
+    }
+
+    .dm-ph-video-trio__cell {
+      contain: layout paint;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      max-height: min(72vh, 560px);
     }
   }
 </style>
@@ -237,7 +273,7 @@
           webkit-playsinline
           x5-playsinline
           loop
-          preload="auto"
+          preload="metadata"
           disablepictureinpicture
           disableremoteplayback
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
@@ -245,6 +281,7 @@
           aria-label="Product video 1">
           <source src="{{ '2cf4080e-3535-4871-8bdd-01405f2327da (2).mp4' | asset_url }}" type="video/mp4">
         </video>
+        <button class="dm-ph-video-trio__fallback" type="button" aria-label="Play product video 1">Tap to play</button>
       </div>
       <div class="dm-ph-video-trio__cell">
         <video
@@ -254,7 +291,7 @@
           webkit-playsinline
           x5-playsinline
           loop
-          preload="auto"
+          preload="metadata"
           disablepictureinpicture
           disableremoteplayback
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
@@ -272,7 +309,7 @@
           webkit-playsinline
           x5-playsinline
           loop
-          preload="auto"
+          preload="metadata"
           disablepictureinpicture
           disableremoteplayback
           controlslist="nodownload noplaybackrate noremoteplayback nofullscreen"
@@ -292,9 +329,10 @@
     if (!root || !root.classList.contains('dm-ph-video-trio')) return;
 
     const videos = Array.from(root.querySelectorAll('video'));
-    const isZaloBrowser = /zalo/i.test(window.navigator.userAgent || '');
+    const userAgent = window.navigator.userAgent || '';
+    const isSafeVideoBrowser = /zalo|FBAN|FBAV|FBIOS|FB_IAB|Instagram|Line|TikTok/i.test(userAgent);
 
-    const prepareVideo = (video) => {
+    const prepareVideo = (video, shouldLoad = true) => {
       video.muted = true;
       video.defaultMuted = true;
       video.controls = false;
@@ -306,7 +344,9 @@
       video.setAttribute('x5-playsinline', '');
       video.setAttribute('controlslist', 'nodownload noplaybackrate noremoteplayback nofullscreen');
       video.setAttribute('x-webkit-airplay', 'deny');
-      if (video.readyState === 0) video.load();
+      video.setAttribute('preload', 'metadata');
+      video.preload = 'metadata';
+      if (shouldLoad && video.readyState === 0) video.load();
     };
 
     const tryPlay = (video) => {
@@ -330,25 +370,28 @@
       });
     });
 
-    if (isZaloBrowser) {
+    if (isSafeVideoBrowser) {
+      root.classList.add('is-safe-video');
       videos.forEach((video) => {
-        prepareVideo(video);
+        prepareVideo(video, false);
         video.autoplay = false;
         video.removeAttribute('autoplay');
         video.preload = 'metadata';
         video.pause();
+        video.closest('.dm-ph-video-trio__cell')?.classList.add('is-waiting-for-tap');
       });
-      return;
-    }
-
-    if ('IntersectionObserver' in window) {
+    } else if ('IntersectionObserver' in window) {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) tryPlay(entry.target);
+            if (entry.isIntersecting) {
+              tryPlay(entry.target);
+            } else {
+              entry.target.pause();
+            }
           });
         },
-        { rootMargin: '160px 0px' }
+        { rootMargin: '40px 0px', threshold: 0.2 }
       );
       videos.forEach((video) => observer.observe(video));
     } else {
@@ -359,11 +402,17 @@
       const button = event.target.closest('.dm-ph-video-trio__fallback');
       if (!button) return;
       const video = button.closest('.dm-ph-video-trio__cell')?.querySelector('video');
-      if (video) tryPlay(video);
+      if (video) {
+        root.classList.remove('is-safe-video');
+        video.closest('.dm-ph-video-trio__cell')?.classList.remove('is-waiting-for-tap');
+        tryPlay(video);
+      }
     });
 
-    ['pageshow', 'visibilitychange'].forEach((eventName) => {
-      window.addEventListener(eventName, playVisibleVideos, { passive: true, once: eventName !== 'visibilitychange' });
-    });
+    if (!isSafeVideoBrowser) {
+      ['pageshow', 'visibilitychange'].forEach((eventName) => {
+        window.addEventListener(eventName, playVisibleVideos, { passive: true, once: eventName !== 'visibilitychange' });
+      });
+    }
   })();
 </script>
