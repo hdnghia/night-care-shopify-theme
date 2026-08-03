@@ -68,12 +68,6 @@ export class ComparisonSliderComponent extends Component {
     if (!mediaWrapper || this.orientation !== 'horizontal') return;
 
     const rect = mediaWrapper.getBoundingClientRect();
-    const compare = Number(mediaWrapper.style.getPropertyValue('--compare') || this.refs.slider.value || 50);
-    const handleX = rect.left + (rect.width * compare) / 100;
-    const hitZone = event.pointerType === 'touch' ? 44 : 28;
-
-    if (Math.abs(event.clientX - handleX) > hitZone) return;
-
     this.stopDrag();
     this.dragController = new AbortController();
     this.dragState = {
