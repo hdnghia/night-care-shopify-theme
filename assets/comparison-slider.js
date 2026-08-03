@@ -16,6 +16,7 @@ export class ComparisonSliderComponent extends Component {
   requiredRefs = ['mediaWrapper', 'slider', 'afterImage'];
   dragController = null;
   dragState = null;
+  touchState = null;
 
   /**
    * Called when component is added to DOM
@@ -31,12 +32,15 @@ export class ComparisonSliderComponent extends Component {
     // Initialize the position (no automatic hint animation on scroll — user drag only)
     this.sync();
     mediaWrapper.addEventListener('pointerdown', this.handlePointerDown, { passive: true });
+    mediaWrapper.addEventListener('touchstart', this.handleTouchStart, { passive: true });
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.refs.mediaWrapper?.removeEventListener('pointerdown', this.handlePointerDown);
+    this.refs.mediaWrapper?.removeEventListener('touchstart', this.handleTouchStart);
     this.stopDrag();
+    this.stopTouch();
   }
 
   /**
@@ -66,6 +70,7 @@ export class ComparisonSliderComponent extends Component {
   handlePointerDown = (event) => {
     const { mediaWrapper } = this.refs;
     if (!mediaWrapper || this.orientation !== 'horizontal') return;
+    if (event.pointerType === 'touch') return;
 
     const rect = mediaWrapper.getBoundingClientRect();
     this.stopDrag();
@@ -118,6 +123,57 @@ export class ComparisonSliderComponent extends Component {
     this.dragController?.abort();
     this.dragController = null;
     this.dragState = null;
+  }
+
+  handleTouchStart = (event) => {
+    const { mediaWrapper } = this.refs;
+    if (!mediaWrapper || this.orientation !== 'horizontal' || event.touches.length !== 1) return;
+
+    const touch = event.touches[0];
+    this.stopTouch();
+    this.touchState = {
+      active: false,
+      rect: mediaWrapper.getBoundingClientRect(),
+      startX: touch.clientX,
+      startY: touch.clientY,
+    };
+
+    document.addEventListener('touchmove', this.handleTouchMove, { passive: false });
+    document.addEventListener('touchend', this.handleTouchEnd);
+    document.addEventListener('touchcancel', this.handleTouchEnd);
+  };
+
+  handleTouchMove = (event) => {
+    if (!this.touchState || event.touches.length !== 1) return;
+
+    const touch = event.touches[0];
+    const dx = Math.abs(touch.clientX - this.touchState.startX);
+    const dy = Math.abs(touch.clientY - this.touchState.startY);
+
+    if (!this.touchState.active) {
+      if (dy > dx + 2 && dy > 5) {
+        this.stopTouch();
+        return;
+      }
+
+      if (dx <= 5 || dx <= dy + 2) return;
+      this.touchState.active = true;
+    }
+
+    if (event.cancelable) event.preventDefault();
+    const value = ((touch.clientX - this.touchState.rect.left) / this.touchState.rect.width) * 100;
+    this.setValue(Math.max(0, Math.min(100, value)));
+  };
+
+  handleTouchEnd = () => {
+    this.stopTouch();
+  };
+
+  stopTouch() {
+    document.removeEventListener('touchmove', this.handleTouchMove);
+    document.removeEventListener('touchend', this.handleTouchEnd);
+    document.removeEventListener('touchcancel', this.handleTouchEnd);
+    this.touchState = null;
   }
 }
 
